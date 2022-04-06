@@ -57,10 +57,10 @@ h1 span,
 h2 span,
 h3 span,
 h4 span {
-	color: #DB0A61;
+	color: #0194ce;
 }
 .colored {
-	color: #DB0A61;
+	color: #0556ec;
 }
 a {
 	color: #55acee;
@@ -148,7 +148,7 @@ blockquote {
 	z-index: 2;
 }
 .subfooter {
-	background-color: #DA095F;
+	background-color: #092fda;
 	padding: 40px 0;
 }
 .subfooter a {
@@ -170,12 +170,12 @@ color: #FF89BA;
 }
 .btn-primary {
 color: #fff;
-background-color: #BD0451;
+background-color: #0426bd;
 border:0px;
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
 color: #fff;
-background-color: #E00A63;
+background-color: #180ae0;
 border:0px;
 }
 .transprant-bg {
@@ -231,7 +231,7 @@ border:0px;
 	z-index: 2;
 	width: 100%;
 	height: 100%;
-	background-color: #DB0A61;
+	background-color: #0556eb;
 }
 .transprant-bg.blue:after {
 	background-color: rgba(85, 172, 238, 0.7);
@@ -359,12 +359,12 @@ text-align:center;
 }
 .btn-default {
 	color: #FFFFFF;
-	background: #E00A63;
+	background: #0b22f1;
 	border: 0;
 }
 .btn-default:hover {
 	color: #ffffff;
-	background-color: #BB0A53;
+	background-color: #240df1;
 	border: 0;
 }
 
@@ -397,7 +397,7 @@ text-align:center;
 	display: inline-block;
 	width: 100%;
 	background-color: #fff;
-	color: #DB0A61;
+	color: #300adb;
 	position: relative;
 	text-decoration: none;
 	border: #ECECEC 1px solid;
@@ -436,8 +436,8 @@ text-align:center;
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus,
 .nav-pills > li > a:hover {
-	background-color: #DB0A61;
-	border-color: #DB0A61;
+	background-color: #1505ec;
+	border-color: #0e0adb;
 	color: #ffffff;
 }
 .nav-pills > li > a {
@@ -526,11 +526,11 @@ padding: 10px 0;
 }
 .main-navigation .navbar-default .navbar-nav > li.active > a {
 	background-color: transparent;
-	color: #DB0A61;
+	color: #0a7ddb;
 }
 .main-navigation .navbar-default .navbar-nav > li > a:hover,
 .main-navigation .navbar-default .navbar-nav > li.active > a:hover {
-	color: #DB0A61;
+	color: #0a65db;
 }
 
 /* carousel */
@@ -779,19 +779,19 @@ border-radius: 50%;
 	color: #0976b4;
 }
 .social-links li.googleplus a:hover {
-	color: #dd4b39;
+	color: #750988;
 }
 .social-links li.youtube a:hover {
-	color: #b31217;
+	color: #5b07a0;
 }
 .social-links li.flickr a:hover {
-	color: #ff0084;
+	color: #7700ff;
 }
 .social-links li.facebook a:hover {
 	color: #3b5998;
 }
 .social-links li.pinterest a:hover {
-	color: #cb2027;
+	color: #500fc8;
 }
 
 /* Isotope Items
@@ -821,7 +821,7 @@ border-radius: 50%;
 }
 .isotope-item .btn-default {
 	color: #FFFFFF;
-	background: rgba(219, 10, 97, 0.69);
+	background: rgba(0, 44, 148, 0.69);
 	margin-top: -36px;
 	z-index: 2;
 	position: relative;
@@ -850,7 +850,7 @@ border-radius: 50%;
 	bottom: -1px;
 	left: 0;
 	right: -1px;
-	background-color: rgba(219, 10, 97, 0.78);
+	background-color: rgba(18, 22, 236, 0.78);
 	cursor: pointer;
 	overflow: hidden;
 	opacity: 0;
