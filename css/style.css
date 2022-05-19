@@ -959,7 +959,7 @@ border-radius: 50%;
 	width: 120px;
 	height: 15px;
 	animation-name: spin;
-	animation-duration: 1.00s;
+	animation-duration: 1.5s;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
   }
