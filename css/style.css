@@ -965,6 +965,6 @@ border-radius: 50%;
   }
   
   @keyframes spin {
-	0% { transform: rotate(-5deg); }
-	100% { transform: rotate(5deg); }
+	0% { transform: rotate(-3deg); }
+	100% { transform: rotate(3deg); }
   }
