@@ -957,7 +957,7 @@ border-radius: 50%;
 
 .logo {
 	width: 135px;
-	height: 30px;
+	height: 15px;
 	animation-name: spin;
 	animation-duration: 1.00s;
 	animation-iteration-count: infinite;
@@ -965,6 +965,6 @@ border-radius: 50%;
   }
   
   @keyframes spin {
-	0% { transform: rotate(-15deg); }
-	100% { transform: rotate(15deg); }
+	0% { transform: rotate(-5deg); }
+	100% { transform: rotate(5deg); }
   }
