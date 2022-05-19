@@ -968,3 +968,11 @@ border-radius: 50%;
 	0% { transform: rotate(-3deg); }
 	100% { transform: rotate(3deg); }
   }
+
+
+  @media only screen and (max-width: 600px) {
+	.cf7_custom_style_1 {
+	   padding-left: 10%;
+	   padding-right: 10%;
+	}
+  }
