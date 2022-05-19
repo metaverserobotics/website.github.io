@@ -957,7 +957,7 @@ border-radius: 50%;
 
 .logo {
 	width: 120px;
-	height: 15px;
+	height: 0px;
 	animation-name: spin;
 	animation-duration: 1.5s;
 	animation-iteration-count: infinite;
