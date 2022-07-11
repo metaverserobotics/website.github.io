@@ -13,9 +13,10 @@ html, body{
   width: 100%;
   height: 50%;
   background: {
+      image: url(../img/blackk.png);
       position: bottom;
       repeat: no-repeat;
-      color: rgb(1, 29, 34);
+      color: black;
       size: cover;
   }
 }

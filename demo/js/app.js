@@ -289,7 +289,7 @@ async function main() {
     renderer.onResize()
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = '#011d22'
+    ctx.fillStyle = '#000'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     if (counter++ % SPEED === 0) {
