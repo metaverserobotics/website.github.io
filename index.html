@@ -2,1582 +2,1589 @@
 <html>
 
 <head>
-    <title>N64 Wasm</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="keywords" content="N64 Emulator, N64 JavaScript Emulator, WebAssembly, HTML5, Nintendo 64">
-    <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
-    <style>
-        @import url('http://fonts.cdnfonts.com/css/8bit-wonder');
-        @import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
-
-        @keyframes color {
-            0% {
-                background: #33CCCC;
-            }
-
-            20% {
-                background: #33CC36;
-            }
-
-            40% {
-                background: #B8CC33;
-            }
-
-            60% {
-                background: #FCCA00;
-            }
-
-            80% {
-                background: #33CC36;
-            }
-
-            100% {
-                background: #33CCCC;
-            }
-        }
-
-        body {
-            background-color: rgb(159, 159, 159);
-            background-image: url("img/new.png");
-            font-family: '8BIT WONDER', sans-serif;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .table td,
-        .table th {
-            padding: 5px;
-        }
-
-        .regularTable td,
-        .regularTable th {
-            padding: 0;
-            vertical-align: top;
-            border-top: 0px;
-        }
-
-
-
-
-        .nav-tabs .nav-item.show .nav-link,
-        .nav-tabs .nav-link.active {
-            color: #007bff;
-        }
-
-
-        .topnav {
-            overflow: hidden;
-            background-color: rgb(0, 0, 0);
-            font-family: '8BIT WONDER', sans-serif;
-
-        }
-
-        .topnav a {
-            list-style: none;
-            color: rgb(113, 128, 255);
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            text-align: center;
-            display: inline-block;
-        }
-
-        .topnav ul {
-            list-style: none;
-            padding: 0px;
-            margin: 0px;
-            text-align: center;
-        }
-
-
-        .topnav a:hover {
-            background-color: rgb(0, 255, 217);
-            color: black;
-        }
-
-        .topnav a.active {
-            background-color: #1c01cb;
-            color: rgb(0, 255, 21);
-        }
-
-        .maintext {
-            color: rgb(113, 128, 255);
-            font-family: '8BIT WONDER', sans-serif;
-        }
-
-        .topicmainone {
-            color: rgb(113, 128, 255);
-            font-family: '8BIT WONDER', sans-serif;
-        }
-
-
-
-        .btn-primary {
-            color: rgb(255, 255, 255);
-            font-family: '8BIT WONDER', sans-serif;
-            background-color: rgb(0, 0, 0);
-            font-size: 40px;
-            border-radius: 0px;
-            border-width: 3px;
-            border-color: rgb(21, 239, 137);
-
-        }
-
-        .btn-primary:hover {
-            background-color: #33CC36;
-            border-color: rgb(255, 255, 255);
-            color: rgb(0, 0, 0);
-
-
-        }
-
-
-
-        .circles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .circles li {
-            position: absolute;
-            display: table-row-group;
-            list-style: none;
-            width: 20px;
-            height: 20px;
-            background: rgb(255, 255, 255);
-            animation: animate 9s linear infinite;
-            bottom: -150px;
-
-        }
-
-        .circles li:nth-child(1) {
-            left: 25%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 0s;
-        }
-
-
-        .circles li:nth-child(2) {
-            left: 10%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 2s;
-            animation-duration: 12s;
-        }
-
-        .circles li:nth-child(3) {
-            left: 70%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 4s;
-        }
-
-        .circles li:nth-child(4) {
-            left: 40%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 0s;
-            animation-duration: 18s;
-        }
-
-        .circles li:nth-child(5) {
-            left: 65%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 0s;
-        }
-
-        .circles li:nth-child(6) {
-            left: 75%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 3s;
-        }
-
-        .circles li:nth-child(7) {
-            left: 35%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 7s;
-        }
-
-        .circles li:nth-child(8) {
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 15s;
-            animation-duration: 45s;
-        }
-
-        .circles li:nth-child(9) {
-            left: 100%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 2s;
-            animation-duration: 35s;
-        }
-
-        .circles li:nth-child(10) {
-            left: 85%;
-            width: 5px;
-            height: 5px;
-            animation-delay: 0s;
-            animation-duration: 11s;
-        }
-
-
-
-        @keyframes animate {
-
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-                border-radius: 0;
-            }
-
-            100% {
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
-                border-radius: 50%;
-            }
-
-        }
-
-        .baloon {
-            color: #33ff00;
-            font-size: 10px;
-        }
-
-        @media screen and (min-width: 601px) {
-            .maintext {
-                font-size: 50px;
-            }
-
-            .topicmainone {
-                font-size: 50px;
-                margin-left: 350px;
-                color: #0126cb;
-            }
-
-            .topicmainone2 {
-                margin-top: 45px;
-                font-size: 15px;
-                color: #0126cb;
-            }
-
-            .topicmainone3 {
-                font-size: 50px;
-                margin-top: -18px;
-                color: #ff0000;
-            }
-
-
-            .topnav a {
-                font-size: 30px;
-            }
-
-            .btn-primary {
-                font-size: 50px;
-            }
-
-            .baloon {
-                font-size: 20px;
-            }
-
-            .baloon2 {
-                font-size: 16px;
-            }
-
-            .wspace {
-                width: 2px;
-                height: 65px;
-            }
-
-            .fpixel {
-                font-size: 15px;
-            }
-
-            .roadmaptext {
-                font-size: 35px;
-                color: rgb(113, 128, 255);
-            }
-
-            .roadmapstyle {
-                color: rgb(113, 128, 255);
-                width: 1030px;
-            }
-
-            .nes-table-responsive {
-                color: #077e2b;
-                font-size: 20px;
-            }
-
-            .nes2 {
-                color: #ffffff;
-                font-size: 20px;
-            }
-
-            .nes3 {
-                color: #0dd8a5;
-                font-size: 20px;
-            }
-            .nes-btn{
-                font-size: 30px;
-            }
-            .roadmaptextb{
-                font-size: 0px;
-                color: #c300ff;
-                font-weight: bolder;
-            }
-        }
-
-        @media screen and (max-width: 600px) {
-            .maintext {
-                font-size: 19px;
-            }
-
-            .topicmainone {
-                font-size: 30px;
-                margin-left: 90px;
-                color: #0126cb;
-            }
-
-            .topicmainone2 {
-                margin-top: 25px;
-                font-size: 10px;
-                color: #0126cb;
-            }
-
-            .topicmainone3 {
-                font-size: 20px;
-                margin-top: -8px;
-                color: #ff0000;
-            }
-
-            .topnav a {
-                font-size: 10px;
-            }
-
-            .btn-primary {
-                font-size: 15px;
-            }
-
-            .baloon {
-                font-size: 10px;
-            }
-
-            .baloon2 {
-                font-size: 8px;
-            }
-
-            .wspace {
-                width: 2px;
-                height: 20px;
-            }
-
-            .fpixel {
-                font-size: 10px;
-            }
-
-            .roadmaptext {
-                font-size: 25px;
-                color: rgb(113, 128, 255);
-            }
-
-            .roadmapstyle {
-                color: rgb(113, 128, 255);
-                width: 320px;
-            }
-
-            .nes-table-responsive {
-                color: #077e2b;
-                font-size: 12px;
-            }
-
-            .nes2 {
-                color: #ffffff;
-                font-size: 12px;
-            }
-
-            .nes3 {
-                color: #0dd8a5;
-                font-size: 12px;
-            }
-            .nes-btn{
-                font-size: 14px;
-            }
-            .roadmaptextb{
-                font-size: 0px;
-                color: #0dd8a5;
-            }
-        }
-
-        .logo {
-            display: inline-block;
-            vertical-align: top;
-            width: 400px;
-            height: 400px;
-            margin-left: 0px;
-            margin-top: 0px;
-            /* if you want it vertically middle of the navbar. */
-        }
-    </style>
+	<title>N64 Wasm</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="keywords" content="N64 Emulator, N64 JavaScript Emulator, WebAssembly, HTML5, Nintendo 64">
+	<meta charset="UTF-8">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+	<link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
+	<style>
+
+		@font-face {
+			font-family: '8BIT WONDER';
+			font-style: normal;
+			font-weight: 400;
+			src: local('8BIT WONDER'), url('8-BIT WONDER.woff') format('woff');
+		}
+
+		@keyframes color {
+			0% {
+				background: #33CCCC;
+			}
+
+			20% {
+				background: #33CC36;
+			}
+
+			40% {
+				background: #B8CC33;
+			}
+
+			60% {
+				background: #FCCA00;
+			}
+
+			80% {
+				background: #33CC36;
+			}
+
+			100% {
+				background: #33CCCC;
+			}
+		}
+
+		body {
+			background-color: rgb(159, 159, 159);
+			background-image: url("img/new.png");
+			font-family: '8BIT WONDER', sans-serif;
+		}
+
+		input[type="file"] {
+			display: none;
+		}
+
+		.table td,
+		.table th {
+			padding: 5px;
+		}
+
+		.regularTable td,
+		.regularTable th {
+			padding: 0;
+			vertical-align: top;
+			border-top: 0px;
+		}
+
+
+
+
+		.nav-tabs .nav-item.show .nav-link,
+		.nav-tabs .nav-link.active {
+			color: #007bff;
+		}
+
+
+		.topnav {
+			overflow: hidden;
+			background-color: rgb(0, 0, 0);
+			font-family: '8BIT WONDER', sans-serif;
+
+		}
+
+		.topnav a {
+			list-style: none;
+			color: rgb(113, 128, 255);
+			text-align: center;
+			padding: 14px 16px;
+			text-decoration: none;
+			text-align: center;
+			display: inline-block;
+		}
+
+		.topnav ul {
+			list-style: none;
+			padding: 0px;
+			margin: 0px;
+			text-align: center;
+		}
+
+
+		.topnav a:hover {
+			background-color: rgb(0, 255, 217);
+			color: black;
+		}
+
+		.topnav a.active {
+			background-color: #1c01cb;
+			color: rgb(0, 255, 21);
+		}
+
+		.maintext {
+			color: rgb(113, 128, 255);
+			font-family: '8BIT WONDER', sans-serif;
+		}
+
+		.topicmainone {
+			color: rgb(113, 128, 255);
+			font-family: '8BIT WONDER', sans-serif;
+		}
+
+
+
+		.btn-primary {
+			color: rgb(255, 255, 255);
+			font-family: '8BIT WONDER', sans-serif;
+			background-color: rgb(0, 0, 0);
+			font-size: 40px;
+			border-radius: 0px;
+			border-width: 3px;
+			border-color: rgb(21, 239, 137);
+
+		}
+
+		.btn-primary:hover {
+			background-color: #33CC36;
+			border-color: rgb(255, 255, 255);
+			color: rgb(0, 0, 0);
+
+
+		}
+
+
+
+		.circles {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		.circles li {
+			position: absolute;
+			display: table-row-group;
+			list-style: none;
+			width: 20px;
+			height: 20px;
+			background: rgb(255, 255, 255);
+			animation: animate 9s linear infinite;
+			bottom: -150px;
+
+		}
+
+		.circles li:nth-child(1) {
+			left: 25%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 0s;
+		}
+
+
+		.circles li:nth-child(2) {
+			left: 10%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 2s;
+			animation-duration: 12s;
+		}
+
+		.circles li:nth-child(3) {
+			left: 70%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 4s;
+		}
+
+		.circles li:nth-child(4) {
+			left: 40%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 0s;
+			animation-duration: 18s;
+		}
+
+		.circles li:nth-child(5) {
+			left: 65%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 0s;
+		}
+
+		.circles li:nth-child(6) {
+			left: 75%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 3s;
+		}
+
+		.circles li:nth-child(7) {
+			left: 35%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 7s;
+		}
+
+		.circles li:nth-child(8) {
+			left: 50%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 15s;
+			animation-duration: 45s;
+		}
+
+		.circles li:nth-child(9) {
+			left: 100%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 2s;
+			animation-duration: 35s;
+		}
+
+		.circles li:nth-child(10) {
+			left: 85%;
+			width: 5px;
+			height: 5px;
+			animation-delay: 0s;
+			animation-duration: 11s;
+		}
+
+
+
+		@keyframes animate {
+
+			0% {
+				transform: translateY(0) rotate(0deg);
+				opacity: 1;
+				border-radius: 0;
+			}
+
+			100% {
+				transform: translateY(-1000px) rotate(720deg);
+				opacity: 0;
+				border-radius: 50%;
+			}
+
+		}
+
+		.baloon {
+			color: #33ff00;
+			font-size: 10px;
+		}
+
+		@media screen and (min-width: 601px) {
+			.maintext {
+				font-size: 50px;
+			}
+
+			.topicmainone {
+				font-size: 50px;
+				margin-left: 350px;
+				color: #0126cb;
+			}
+
+			.topicmainone2 {
+				margin-top: 45px;
+				font-size: 15px;
+				color: #0126cb;
+			}
+
+			.topicmainone3 {
+				font-size: 50px;
+				margin-top: -18px;
+				color: #ff0000;
+			}
+
+
+			.topnav a {
+				font-size: 30px;
+			}
+
+			.btn-primary {
+				font-size: 50px;
+			}
+
+			.baloon {
+				font-size: 20px;
+			}
+
+			.baloon2 {
+				font-size: 16px;
+			}
+
+			.wspace {
+				width: 2px;
+				height: 65px;
+			}
+
+			.fpixel {
+				font-size: 15px;
+			}
+
+			.roadmaptext {
+				font-size: 35px;
+				color: rgb(113, 128, 255);
+			}
+
+			.roadmapstyle {
+				color: rgb(113, 128, 255);
+				width: 1030px;
+			}
+
+			.nes-table-responsive {
+				color: #077e2b;
+				font-size: 20px;
+			}
+
+			.nes2 {
+				color: #ffffff;
+				font-size: 20px;
+			}
+
+			.nes3 {
+				color: #0dd8a5;
+				font-size: 20px;
+			}
+
+			.nes-btn {
+				font-size: 30px;
+			}
+
+			.roadmaptextb {
+				font-size: 0px;
+				color: #c300ff;
+				font-weight: bolder;
+			}
+		}
+
+		@media screen and (max-width: 600px) {
+			.maintext {
+				font-size: 19px;
+			}
+
+			.topicmainone {
+				font-size: 30px;
+				margin-left: 90px;
+				color: #0126cb;
+			}
+
+			.topicmainone2 {
+				margin-top: 25px;
+				font-size: 10px;
+				color: #0126cb;
+			}
+
+			.topicmainone3 {
+				font-size: 20px;
+				margin-top: -8px;
+				color: #ff0000;
+			}
+
+			.topnav a {
+				font-size: 10px;
+			}
+
+			.btn-primary {
+				font-size: 15px;
+			}
+
+			.baloon {
+				font-size: 10px;
+			}
+
+			.baloon2 {
+				font-size: 8px;
+			}
+
+			.wspace {
+				width: 2px;
+				height: 20px;
+			}
+
+			.fpixel {
+				font-size: 10px;
+			}
+
+			.roadmaptext {
+				font-size: 25px;
+				color: rgb(113, 128, 255);
+			}
+
+			.roadmapstyle {
+				color: rgb(113, 128, 255);
+				width: 320px;
+			}
+
+			.nes-table-responsive {
+				color: #077e2b;
+				font-size: 12px;
+			}
+
+			.nes2 {
+				color: #ffffff;
+				font-size: 12px;
+			}
+
+			.nes3 {
+				color: #0dd8a5;
+				font-size: 12px;
+			}
+
+			.nes-btn {
+				font-size: 14px;
+			}
+
+			.roadmaptextb {
+				font-size: 0px;
+				color: #0dd8a5;
+			}
+		}
+
+		.logo {
+			display: inline-block;
+			vertical-align: top;
+			width: 400px;
+			height: 400px;
+			margin-left: 0px;
+			margin-top: 0px;
+			/* if you want it vertically middle of the navbar. */
+		}
+	</style>
 </head>
 
 <body>
-    <div class="topnav">
-        <ul>
-            <a href="#maindiv">MAIN</a>
-            <a href="#topPanel">PLAY GAME</a>
-            <a href="#tokenomics">ROADMAP</a>
-            <a href="#roadmap">TOKENOMICS</a>
-            <a href="#voting" style="color: #ff0000;">VOTING</a>
-            <a href="#tokenomics" style="color: #ff0000;">DOG</a>
-        </ul>
+	<div class="topnav">
+		<ul>
+			<a href="#maindiv">MAIN</a>
+			<a href="#topPanel">PLAY GAME</a>
+			<a href="#tokenomics">ROADMAP</a>
+			<a href="#roadmap">TOKENOMICS</a>
+			<a href="#voting" style="color: #ff0000;">VOTING</a>
+			<a href="#tokenomics" style="color: #ff0000;">DOG</a>
+		</ul>
 
-    </div>
+	</div>
 
-    <div id="maindiv" class="container text-center">
-        <div class="wspace"></div>
+	<div id="maindiv" class="container text-center">
+		<div class="wspace"></div>
 
-        <div class="continer row text-center">
-            <div class="topicmainone">
-                NINTENDO
-            </div>
-            <div class="topicmainone2">
-                (®)
-            </div>
-            <div style="width:2px; height: 10px;"></div>
+		<div class="continer row text-center">
+			<div class="topicmainone">
+				NINTENDO
+			</div>
+			<div class="topicmainone2">
+				(®)
+			</div>
+			<div style="width:2px; height: 10px;"></div>
 
-            <div class="topicmainone3" style="">
-                64
-            </div>
-        </div>
+			<div class="topicmainone3" style="">
+				64
+			</div>
+		</div>
 
-        <img class="logo" src="img/logo.png">
+		<img class="logo" src="img/logo.png">
 
-        <div class="nes-container with-title is-dark fpixel" style="margin-top: 50px; margin-bottom: 50px">
-            <h3 class="title">ABOUT</h3>
-            <div>
-                <i class="nes-icon is-small heart"></i>
-                Welcome to Nintendo 64 game token bring the historycal games back to decentralized apps on bsc scan.
-                this token will give you the ability to play all nintendo 64 games on chrome desktop. Token holders will
-                vote for the game that will be adopted to the decentralized enviroment, in the first stage playing games
-                is free to everyone. in furure only token holders will be able to play online on the DOG ( decentralized
-                online game ) platform and there will be give away between players
-                <i class="nes-icon is-small heart"></i>
-            </div>
-        </div>
-        <div class="roadmaptextb">
-            * | | | |------------------| | | | * 
-        </div>
-        <div id="topPanel" style="display: none;">
-            <div style="width:2px; height: 50px;"></div>
-            <div class="nes-balloon from-left is-dark">
-                <p class="baloon"><span>Game can be played only on Desktop Chrome at first stage every one can play after q2 stage only token holder will able to play authorizing with wallet</span></p>
-                <p class="baloon2">Thank you!!!</p>
-            </div>
-            <!-- BEFORE LOAD -->
-            <div rv-if="data.beforeEmulatorStarted">
-                <button type="button" class="nes-btn is-success" onclick="myClass.loadRom();"
-                    >PLAY GAME</button>
-                    <button type="button" class="nes-btn is-disabled"
-                    >CONNECT WALLET</button>
-
+		<div class="nes-container with-title is-dark fpixel" style="margin-top: 50px; margin-bottom: 50px">
+			<h3 class="title">ABOUT</h3>
+			<div>
+				<i class="nes-icon is-small heart"></i>
+				Welcome to Nintendo 64 game token bring the historycal games back to decentralized apps on bsc scan.
+				this token will give you the ability to play all nintendo 64 games on chrome desktop. Token holders will
+				vote for the game that will be adopted to the decentralized enviroment, in the first stage playing games
+				is free to everyone. in furure only token holders will be able to play online on the DOG ( decentralized
+				online game ) platform and there will be give away between players
+				<i class="nes-icon is-small heart"></i>
+			</div>
+		</div>
+		<div class="roadmaptextb">
+			* | | | |------------------| | | | *
+		</div>
+		<div id="topPanel" style="display: none;">
+			<div style="width:2px; height: 50px;"></div>
+			<div class="nes-balloon from-left is-dark">
+				<p class="baloon"><span>Game can be played only on Desktop Chrome at first stage every one can play
+						after q2 stage only token holder will able to play authorizing with wallet</span></p>
+				<p class="baloon2">Thank you!!!</p>
+			</div>
+			<!-- BEFORE LOAD -->
+			<div rv-if="data.beforeEmulatorStarted">
+				<button type="button" class="nes-btn is-success" onclick="myClass.loadRom();">PLAY GAME</button>
+				<button type="button" class="nes-btn is-disabled">CONNECT WALLET</button>
 
 
 
-                <span rv-if="data.showLogin">
-                    <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==false'"
-                        onclick="myApp.loginModal()">Login</button>
-                    <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==true'"
-                        onclick="myApp.logout()">Logout</button>
-                </span>
 
-                <div class="form-check" style="margin-top: 13px;" rv-if="data.settings.SHOWADVANCED">
-                    <label class="form-check-label" style="margin-right: 10px;">
-                        <input type="checkbox" class="form-check-input" rv-checked="data.chkAdvanced"
-                            rv-disabled="data.moduleInitializing">
-                        Advanced
-                    </label>
-                </div>
+				<span rv-if="data.showLogin">
+					<button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==false'"
+						onclick="myApp.loginModal()">Login</button>
+					<button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==true'"
+						onclick="myApp.logout()">Logout</button>
+				</span>
 
-                <div class="card"
-                    style="width: 18rem;margin-left: auto;margin-right: auto;margin-top: 20px;margin-bottom: 31px;"
-                    rv-if="data.chkAdvanced">
-                    <div class="card-body">
-                        <h5 class="card-title">Advanced</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Options</h6>
+				<div class="form-check" style="margin-top: 13px;" rv-if="data.settings.SHOWADVANCED">
+					<label class="form-check-label" style="margin-right: 10px;">
+						<input type="checkbox" class="form-check-input" rv-checked="data.chkAdvanced"
+							rv-disabled="data.moduleInitializing">
+						Advanced
+					</label>
+				</div>
 
-                        <button id="btnUploadEep" class="btn btn-secondary mt-4" onclick="myApp.uploadEepBrowse()">
-                            Import Save File (EEP)</button>
-                        <div rv-if="data.eepName | ev_string '.length > 0'">
-                            { data.eepName }
-                        </div>
+				<div class="card"
+					style="width: 18rem;margin-left: auto;margin-right: auto;margin-top: 20px;margin-bottom: 31px;"
+					rv-if="data.chkAdvanced">
+					<div class="card-body">
+						<h5 class="card-title">Advanced</h5>
+						<h6 class="card-subtitle mb-2 text-muted">Options</h6>
 
-                        <button id="btnUploadSra" class="btn btn-secondary mt-4" onclick="myApp.uploadSraBrowse()">
-                            Import Save File (SRA)</button>
-                        <div rv-if="data.sraName | ev_string '.length > 0'">
-                            { data.sraName }
-                        </div>
+						<button id="btnUploadEep" class="btn btn-secondary mt-4" onclick="myApp.uploadEepBrowse()">
+							Import Save File (EEP)</button>
+						<div rv-if="data.eepName | ev_string '.length > 0'">
+							{ data.eepName }
+						</div>
 
-                        <button id="btnUploadFla" class="btn btn-secondary mt-4" onclick="myApp.uploadFlaBrowse()">
-                            Import Save File (FLA)</button>
-                        <div rv-if="data.flaName | ev_string '.length > 0'">
-                            { data.flaName }
-                        </div>
+						<button id="btnUploadSra" class="btn btn-secondary mt-4" onclick="myApp.uploadSraBrowse()">
+							Import Save File (SRA)</button>
+						<div rv-if="data.sraName | ev_string '.length > 0'">
+							{ data.sraName }
+						</div>
 
-                        <!-- <a href="#" class="card-link">Card link</a>
+						<button id="btnUploadFla" class="btn btn-secondary mt-4" onclick="myApp.uploadFlaBrowse()">
+							Import Save File (FLA)</button>
+						<div rv-if="data.flaName | ev_string '.length > 0'">
+							{ data.flaName }
+						</div>
+
+						<!-- <a href="#" class="card-link">Card link</a>
                         <a href="#" class="card-link">Another link</a> -->
-                    </div>
-                </div>
+					</div>
+				</div>
 
 
 
-                <input id="file-upload-eep" type="file" />
-                <input id="file-upload-sra" type="file" />
-                <input id="file-upload-fla" type="file" />
-                <input id="file-upload" type="file" />
+				<input id="file-upload-eep" type="file" />
+				<input id="file-upload-sra" type="file" />
+				<input id="file-upload-fla" type="file" />
+				<input id="file-upload" type="file" />
 
-                <!-- ROM LIST -->
-                <!-- <div class="form-group mt-2 mb-4" rv-if="data.hasRoms"
+				<!-- ROM LIST -->
+				<!-- <div class="form-group mt-2 mb-4" rv-if="data.hasRoms"
                     style="width: 300px;margin-left: auto; margin-right:auto;">
                     <select class="form-control" id="romselect">
                         <option rv-each-rom="data.romList" rv-value="rom.url">{rom.title}</option>
                     </select>
                 </div> -->
 
-                <!-- SAVE STATES -->
-                <div id="dbSaveStates" rv-if="data.loggedIn | ev '==true'">
-                    <button id="btnLoadRomAndSaveState" class="btn btn-primary mt-2 mb-2"
-                        onclick="myApp.loadRomAndSavestate()" rv-disabled="data.moduleInitializing">Load
-                        Savestate</button>
-                    <div class="form-group mt-2 mb-4" style="width: 300px;margin-left: auto; margin-right:auto;">
-                        <select class="form-control" id="savestateSelect">
-                            <option rv-each-item="data.n64SaveStates" rv-value="item.Name">{item.Name}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+				<!-- SAVE STATES -->
+				<div id="dbSaveStates" rv-if="data.loggedIn | ev '==true'">
+					<button id="btnLoadRomAndSaveState" class="btn btn-primary mt-2 mb-2"
+						onclick="myApp.loadRomAndSavestate()" rv-disabled="data.moduleInitializing">Load
+						Savestate</button>
+					<div class="form-group mt-2 mb-4" style="width: 300px;margin-left: auto; margin-right:auto;">
+						<select class="form-control" id="savestateSelect">
+							<option rv-each-item="data.n64SaveStates" rv-value="item.Name">{item.Name}</option>
+						</select>
+					</div>
+				</div>
+			</div>
 
 
-            <!-- AFTER LOAD -->
-            <div rv-hide="data.beforeEmulatorStarted">
-                <button class="nes-btn" onclick="myApp.newRom()">BACK</button>
-                <div class="btn-group mt-2 mb-2" rv-if="data.settings.SHOWADVANCED">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Advanced
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" onclick="myApp.exportEep()" style="cursor: pointer;">Export Save
-                            (EEP)</a>
-                        <a class="dropdown-item" onclick="myApp.exportSra()" style="cursor: pointer;">Export Save
-                            (SRA)</a>
-                        <a class="dropdown-item" onclick="myApp.exportFla()" style="cursor: pointer;">Export Save
-                            (FLA)</a>
-                    </div>
-                </div>
-                <div class="btn-group mt-2 mb-2" rv-if="data.settings.SHOWOPTIONS">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Options
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" onclick="myApp.reset()" style="cursor: pointer;">Reset</a>
-                        <a class="dropdown-item" onclick="myApp.toggle_fps()" style="cursor: pointer;">Toggle FPS</a>
-                    </div>
-                </div>
+			<!-- AFTER LOAD -->
+			<div rv-hide="data.beforeEmulatorStarted">
+				<button class="nes-btn" onclick="myApp.newRom()">BACK</button>
+				<div class="btn-group mt-2 mb-2" rv-if="data.settings.SHOWADVANCED">
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						Advanced
+					</button>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" onclick="myApp.exportEep()" style="cursor: pointer;">Export Save
+							(EEP)</a>
+						<a class="dropdown-item" onclick="myApp.exportSra()" style="cursor: pointer;">Export Save
+							(SRA)</a>
+						<a class="dropdown-item" onclick="myApp.exportFla()" style="cursor: pointer;">Export Save
+							(FLA)</a>
+					</div>
+				</div>
+				<div class="btn-group mt-2 mb-2" rv-if="data.settings.SHOWOPTIONS">
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						Options
+					</button>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" onclick="myApp.reset()" style="cursor: pointer;">Reset</a>
+						<a class="dropdown-item" onclick="myApp.toggle_fps()" style="cursor: pointer;">Toggle FPS</a>
+					</div>
+				</div>
 
-                <button rv-if="data.loggedIn | ev '==true'" class="btn btn-primary mt-2 mb-2"
-                    onclick="myApp.loadCloud()" rv-disabled="data.noCloudSave">Load Cloud</button>
+				<button rv-if="data.loggedIn | ev '==true'" class="btn btn-primary mt-2 mb-2"
+					onclick="myApp.loadCloud()" rv-disabled="data.noCloudSave">Load Cloud</button>
 
-                <button class="nes-btn " onclick="myApp.zoomOut()">Zoom Out</button>
-                <button class="nes-btn " onclick="myApp.zoomIn()">Zoom In</button>
-                <button class="nes-btn " onclick="myApp.fullscreen()">Full Screen</button>
-
-
-            </div>
+				<button class="nes-btn " onclick="myApp.zoomOut()">Zoom Out</button>
+				<button class="nes-btn " onclick="myApp.zoomIn()">Zoom In</button>
+				<button class="nes-btn " onclick="myApp.fullscreen()">Full Screen</button>
 
 
+			</div>
 
-            <div style="margin-top:40px;" rv-if="data.beforeEmulatorStarted">
-                <div id="dropArea" style="width: 0px; height: 0px; border: rgb(0, 0, 0) 1px solid;margin-left: auto;
+
+
+			<div style="margin-top:40px;" rv-if="data.beforeEmulatorStarted">
+				<div id="dropArea" style="width: 0px; height: 0px; border: rgb(0, 0, 0) 1px solid;margin-left: auto;
                     color: rgb(0, 0, 0);margin-right: auto; border-style: dashed;">
-                    <br>
-                    <br>
+					<br>
+					<br>
 
-                    <br>
+					<br>
 
-                </div>
-            </div>
-        </div>
+				</div>
+			</div>
+		</div>
 
-        <div id="lblErrorOuter" style="display: none;">
-            <div rv-if="data.lblError | ev_string '.length > 0'" class="alert alert-danger mt-4" id="lblError"
-                role="alert" rv-html="data.lblError">
-            </div>
-        </div>
+		<div id="lblErrorOuter" style="display: none;">
+			<div rv-if="data.lblError | ev_string '.length > 0'" class="alert alert-danger mt-4" id="lblError"
+				role="alert" rv-html="data.lblError">
+			</div>
+		</div>
 
-        <div id="mydiv" class="mt-4"></div>
-        <!-- ID has to be canvas it's hardcoded in the EM generated .js -->
-        <div id="canvasDiv" style="display: none;">
-            <canvas id="canvas" style="width: 640px;"></canvas>
-        </div>
+		<div id="mydiv" class="mt-4"></div>
+		<!-- ID has to be canvas it's hardcoded in the EM generated .js -->
+		<div id="canvasDiv" style="display: none;">
+			<canvas id="canvas" style="width: 640px;"></canvas>
+		</div>
 
-        <div id="bottomPanel" rv-hide="data.beforeEmulatorStarted">
-            <!-- <div>{ data.audioSkipCount}</div> -->
-        </div>
+		<div id="bottomPanel" rv-hide="data.beforeEmulatorStarted">
+			<!-- <div>{ data.audioSkipCount}</div> -->
+		</div>
 
 
-        <h6 class="card-title mt-4">
-            <button type="button" class="nes-btn is-primary"
-            >BSC SCAN</button>
-            <button type="button" class="nes-btn is-primary"
-            >BUY N64</button>
-            
-            <!-- <button id="btnPlayGame" class="btn btn-primary mt-4" onclick="myClass.loadRom();" rv-if="data.hasRoms"
+		<h6 class="card-title mt-4">
+			<button type="button" class="nes-btn is-primary">BSC SCAN</button>
+			<button type="button" class="nes-btn is-primary">BUY N64</button>
+
+			<!-- <button id="btnPlayGame" class="btn btn-primary mt-4" onclick="myClass.loadRom();" rv-if="data.hasRoms"
                 rv-disabled="data.moduleInitializing">BSC SCAN</button>
             <button id="btnPlayGame" class="btn btn-primary mt-4" onclick="myClass.loadRom();" rv-if="data.hasRoms"
                 rv-disabled="data.moduleInitializing">BUY N64</button> -->
-              
-        </h6>
-
-    </div>
-    <div style="width:20px; height: 35px;"></div>
-
-    <div id="tokenomics" class="container text-center fpixel">
-        <div class="roadmaptextb">
-            * | | | |------------------| | | | * 
-        </div>
-        <div style="width:20px; height: 35px;"></div>
-        <div class="roadmaptext">
-            Q1
-        </div>
-
-        <div class="nes-container is-dark with-title">
-            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">*</p>
-            <p><i class="nes-icon is-small star is-half"></i>Launch of N64 TOKEN and Website with off chain demo game.<i
-                    class="nes-icon is-small star is-half"></i></p>
-        </div>
-        <div class="roadmaptext">
-            Q2
-        </div>
-
-        <div class="nes-container is-dark with-title">
-            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">**</p>
-
-            <p> <i class="nes-icon is-small star is-empty"></i> Update website to give Game acces only for n64 token
-                holders <i class="nes-icon is-small star is-empty"></i></p>
-        </div>
-        <div class="roadmaptext">
-            Q3
-        </div>
-        <div class="nes-container is-dark with-title">
-            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">***</p>
-            <p><i class="nes-icon is-small star is-empty"></i>Deploy contracts for voting with the n64 token holders and
-                start voting for the next game<i class="nes-icon is-small star is-empty"></i></p>
-        </div>
-        <div class="roadmaptext">
-            Q4
-        </div>
-        <div class="nes-container is-dark with-title">
-            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">****</p>
-            <p><i class="nes-icon is-small star is-empty"></i>Adopt the selected game to the decentralized enviroment
-                for multiplayer win and get rewards as n64 token<i class="nes-icon is-small star is-empty"></i></p>
-        </div>
-        <div class="roadmaptext">
-            Q5
-        </div>
-        <div class="nes-container is-dark with-title">
-            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">*****</p>
-            <p><i class="nes-icon is-small star is-empty"></i>Renounce Ownership and enjoy the ride for nintendo 64
-                multiplay on decentralized world.<i class="nes-icon is-small star is-empty"></i></p>
-        </div>
-        <div class="roadmaptext">
-            ||
-        </div>
-        <div class="roadmaptext">
-            ||
-        </div>
-        <div class="roadmaptext">
-            ||
-        </div>
-
-        <section class="nes-container">
-            <section class="message-list">
-                <section class="message -left">
-
-                    <!-- Balloon -->
-                    <div class="nes-balloon from-left">
-                        <p>Hello Mate what is ths n64 token</p>
-                    </div>
-                </section>
-
-                <section class="message -right">
-                    <!-- Balloon -->
-                    <div class="nes-balloon from-right">
-                        <p>we can play nintendo 64 games on chain bet and win now its in the first launch state look at
-                            the road map</p>
-                    </div>
-                </section>
-
-                <section class="message -left">
-
-                    <!-- Balloon -->
-                    <div class="nes-balloon from-left">
-                        <p>Thx Mate i am going to buy before it will raise</p>
-                    </div>
-                </section>
-
-                <section class="message -right">
-                    <!-- Balloon -->
-                    <div class="nes-balloon from-right">
-                        <p>Np enjoy the off chain demo game</p>
-                    </div>
-                </section>
-            </section>
-        </section>
-        <div class="roadmaptextb">
-            * | | | |------------------| | | | * 
-        </div>
-        <div style="width:20px; height: 35px;"></div>
-    </div>
 
-    <div id="roadmap" class="container text-center">
-        <div class="nes-container with-title is-dark" style="margin-top: 50px; margin-bottom: 50px;">
-            <h3 class="title"></h3>
-            <div>
-                <div class="maintext">
-                    TOKENOMICS
-                </div>
-            </div>
-            <div class="nes-table-responsive nes2">
+		</h6>
+
+	</div>
+	<div style="width:20px; height: 35px;"></div>
+
+	<div id="tokenomics" class="container text-center fpixel">
+		<div class="roadmaptextb">
+			* | | | |------------------| | | | *
+		</div>
+		<div style="width:20px; height: 35px;"></div>
+		<div class="roadmaptext">
+			Q1
+		</div>
+
+		<div class="nes-container is-dark with-title">
+			<p class="title roadmapstyle" style="color: rgb(113, 128, 255);">*</p>
+			<p><i class="nes-icon is-small star is-half"></i>Launch of N64 TOKEN and Website with off chain demo game.<i
+					class="nes-icon is-small star is-half"></i></p>
+		</div>
+		<div class="roadmaptext">
+			Q2
+		</div>
+
+		<div class="nes-container is-dark with-title">
+			<p class="title roadmapstyle" style="color: rgb(113, 128, 255);">**</p>
+
+			<p> <i class="nes-icon is-small star is-empty"></i> Update website to give Game acces only for n64 token
+				holders <i class="nes-icon is-small star is-empty"></i></p>
+		</div>
+		<div class="roadmaptext">
+			Q3
+		</div>
+		<div class="nes-container is-dark with-title">
+			<p class="title roadmapstyle" style="color: rgb(113, 128, 255);">***</p>
+			<p><i class="nes-icon is-small star is-empty"></i>Deploy contracts for voting with the n64 token holders and
+				start voting for the next game<i class="nes-icon is-small star is-empty"></i></p>
+		</div>
+		<div class="roadmaptext">
+			Q4
+		</div>
+		<div class="nes-container is-dark with-title">
+			<p class="title roadmapstyle" style="color: rgb(113, 128, 255);">****</p>
+			<p><i class="nes-icon is-small star is-empty"></i>Adopt the selected game to the decentralized enviroment
+				for multiplayer win and get rewards as n64 token<i class="nes-icon is-small star is-empty"></i></p>
+		</div>
+		<div class="roadmaptext">
+			Q5
+		</div>
+		<div class="nes-container is-dark with-title">
+			<p class="title roadmapstyle" style="color: rgb(113, 128, 255);">*****</p>
+			<p><i class="nes-icon is-small star is-empty"></i>Renounce Ownership and enjoy the ride for nintendo 64
+				multiplay on decentralized world.<i class="nes-icon is-small star is-empty"></i></p>
+		</div>
+		<div class="roadmaptext">
+			||
+		</div>
+		<div class="roadmaptext">
+			||
+		</div>
+		<div class="roadmaptext">
+			||
+		</div>
+
+		<section class="nes-container">
+			<section class="message-list">
+				<section class="message -left">
+
+					<!-- Balloon -->
+					<div class="nes-balloon from-left">
+						<p>Hello Mate what is ths n64 token</p>
+					</div>
+				</section>
+
+				<section class="message -right">
+					<!-- Balloon -->
+					<div class="nes-balloon from-right">
+						<p>we can play nintendo 64 games on chain bet and win now its in the first launch state look at
+							the road map</p>
+					</div>
+				</section>
+
+				<section class="message -left">
+
+					<!-- Balloon -->
+					<div class="nes-balloon from-left">
+						<p>Thx Mate i am going to buy before it will raise</p>
+					</div>
+				</section>
+
+				<section class="message -right">
+					<!-- Balloon -->
+					<div class="nes-balloon from-right">
+						<p>Np enjoy the off chain demo game</p>
+					</div>
+				</section>
+			</section>
+		</section>
+		<div class="roadmaptextb">
+			* | | | |------------------| | | | *
+		</div>
+		<div style="width:20px; height: 35px;"></div>
+	</div>
 
+	<div id="roadmap" class="container text-center">
+		<div class="nes-container with-title is-dark" style="margin-top: 50px; margin-bottom: 50px;">
+			<h3 class="title"></h3>
+			<div>
+				<div class="maintext">
+					TOKENOMICS
+				</div>
+			</div>
+			<div class="nes-table-responsive nes2">
 
-                <tr>
-                    <th style="color: #c3ec0c">lp</th>
-                    <td>---- 20 BNB</td>
 
+				<tr>
+					<th style="color: #c3ec0c">lp</th>
+					<td>---- 20 BNB</td>
 
-                </tr>
-            </div>
-            <div style="width:2px; height: 50px;"></div>
 
+				</tr>
+			</div>
+			<div style="width:2px; height: 50px;"></div>
 
-            <div class="nes-table-responsive">
 
+			<div class="nes-table-responsive">
 
-                <tr>
-                    <th style="color: #c3ec0c">total tax fee</th>
-                    <td>---- 14 %</td>
 
-                </tr>
-            </div>
-            <div class="nes-table-responsive">
+				<tr>
+					<th style="color: #c3ec0c">total tax fee</th>
+					<td>---- 14 %</td>
 
+				</tr>
+			</div>
+			<div class="nes-table-responsive">
 
-                <tr>
-                    <th style="color: #c3ec0c">development</th>
-                    <td>---- 6 %</td>
 
+				<tr>
+					<th style="color: #c3ec0c">development</th>
+					<td>---- 6 %</td>
 
-                </tr>
-            </div>
-            <div class="nes-table-responsive">
 
+				</tr>
+			</div>
+			<div class="nes-table-responsive">
 
-                <tr style="color: #007bff">
-                    <th style="color: #c3ec0c">marketing</th>
-                    <td style="color: #9aa7b4;">---- 6 %</td>
 
+				<tr style="color: #007bff">
+					<th style="color: #c3ec0c">marketing</th>
+					<td style="color: #9aa7b4;">---- 6 %</td>
 
-                </tr>
-            </div>
-            <div class="nes-table-responsive">
 
+				</tr>
+			</div>
+			<div class="nes-table-responsive">
 
-                <tr>
-                    <th style="color: #c3ec0c">reward</th>
-                    <td>---- 2 %</td>
 
+				<tr>
+					<th style="color: #c3ec0c">reward</th>
+					<td>---- 2 %</td>
 
-                </tr>
-            </div>
 
+				</tr>
+			</div>
 
-            <div style="width:2px; height: 50px;"></div>
-            <div class="nes-table-responsive nes3">
 
+			<div style="width:2px; height: 50px;"></div>
+			<div class="nes-table-responsive nes3">
 
-                <tr>
-                    <th style="color: #c3ec0c">Totoal supply </th>
-                    <td>---- 1.000.000.000</td>
 
+				<tr>
+					<th style="color: #c3ec0c">Totoal supply </th>
+					<td>---- 1.000.000.000</td>
 
-                </tr>
-            </div>
-            <div class="nes-table-responsive nes3">
 
+				</tr>
+			</div>
+			<div class="nes-table-responsive nes3">
 
-                <tr>
-                    <th style="color: #c3ec0c">liquid added</th>
-                    <td>---- 650.000.000</td>
 
+				<tr>
+					<th style="color: #c3ec0c">liquid added</th>
+					<td>---- 650.000.000</td>
 
-                </tr>
-            </div>
-            <div class="nes-table-responsive nes3">
 
-
-                <tr>
-                    <th style="color: #c3ec0c">burned</th>
-                    <td>---- 300.000.000</td>
-
-
-                </tr>
-            </div>
-
-            <div class="nes-table-responsive nes3">
-
-
-                <tr>
-                    <th style="color: #c3ec0c">team</th>
-                    <td style="border-color: #0126cb;">---- 50.000.000</td>
-
-
-                </tr>
-            </div>
-
-
-
-
-
-        </div>
-        <div class="roadmaptextb">
-            * | | | |------------------| | | | * 
-        </div>
-        <div style="width:20px; height: 35px;"></div>
-        <div id="voting" class="container text-center fpixel"></div>
-        <div>
-            
-            <div class="maintext" style="color: #ff0000;">
-                VOTING
-            </div>
-        </div>
-        <div class="lists" style="color: #ffffff">
-            <label for="default_select" style="color: #1a8d10">VOTE NEXT GAME</label>
-            <div class="nes-select">
-                <select required id="default_select">
-                    <option value="" disabled selected hidden>Select...</option>
-                    <option value="0">SUPER MARIO</option>
-                    <option value="1">F-ZERO-X</option>
-                    <option value="2">EVILS DEVIL</option>
-                </select>
-            </div>
-        </div>
-        <div class="lists" style="color: #ffffff">
-            <label for="default_select" style="color: #1a8d10">MULTIPLAYER OPTION</label>
-            <div class="nes-select">
-                <select required id="default_select">
-                    <option value="" disabled selected hidden>Select...</option>
-                    <option value="0">NO</option>
-                    <option value="1">YES</option>
-                </select>
-            </div>
-        </div>
-        <div class="lists" style="color: #ffffff">
-            <label for="default_select" style="color: #1a8d10">BET OR CONSTANT WIN</label>
-            <div class="nes-select">
-                <select required id="default_select">
-                    <option value="" disabled selected hidden>Select...</option>
-                    <option value="0">BET</option>
-                    <option value="1">CONSTANT</option>
-                </select>
-            </div>
-        </div>
-        <button type="button" class="nes-btn is-disabled">CONNECT WALLET</button>
-        <button type="button" class="nes-btn is-disabled">GIVE VOTE</button>
-        <div style="width:2px; height: 50px;"></div>
-        <div class="nes-balloon from-left is-dark">
-            <p class="baloon"><span>After Q3 stage voting will be enabled for now it is disabled</span></p>
-        </div>
-        <div class="roadmaptextb">
-            * | | | |------------------| | | | * 
-        </div>
-        <div style="width:20px; height: 35px;"></div>
-        <div>
-
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-            <div class="roadmaptext">
-                ||
-            </div>
-
-
-
-
-
-    </div>
-
-    <!--  Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" class="form-control" id="txtPassword" autocomplete="off"
-                            rv-value="data.password" onkeydown="" placeholder="Enter Password">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="myApp.loginSubmit()">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Keymapping Modal -->
-    <div class="modal fade " id="buttonsModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Remap Buttons</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="modalMain" style="padding-bottom: 0;">
-                    <table class="table" rv-hide="data.remapWait">
-                        <thead>
-                            <tr>
-                                <th scope="col">Button</th>
-                                <th scope="col">Keyboard</th>
-                                <th scope="col">Joypad</th>
-                                <th scope="col">Remap</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">D-Up</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Up" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Up" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(1)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(1)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">D-Down</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Down" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Down" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(2)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(2)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">D-Left</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Left" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Left" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(3)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(3)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">D-Right</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Right" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Right" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(4)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(4)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">A</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_A" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Action_A" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(5)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(5)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">B</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_B" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Action_B" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(6)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(6)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Start</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_Start" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Action_Start" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(8)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(8)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Z</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_Z" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Action_Z" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(10)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(10)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">L</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_L" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Action_L" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(11)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(11)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">R</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_R" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Action_R" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(12)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(12)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Menu</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Menu" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <input rv-value="data.remappings.Joy_Mapping_Menu" type="text" class="form-control"
-                                        disabled>
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(9)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapJoy(9)"
-                                                    class="btn btn-primary ml-2">Joypad</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">CUP</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_CUP" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(13)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">CDOWN</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_CDOWN" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(14)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">CLEFT</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_CLEFT" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(15)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">CRIGHT</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_CRIGHT" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(16)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">UP</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_Analog_Up" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(17)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">DOWN</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_Analog_Down" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(18)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">LEFT</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_Analog_Left" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(19)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">RIGHT</th>
-                                <td>
-                                    <input rv-value="data.remappings.Mapping_Action_Analog_Right" type="text"
-                                        class="form-control" disabled>
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <table class="regularTable">
-                                        <tr>
-                                            <td>
-                                                <button type="button" onclick="myApp.btnRemapKey(20)"
-                                                    class="btn btn-primary">Key</button>
-                                            </td>
-                                            <td>
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div rv-if="data.remapWait">
-                        <div class="mt-4 mb-4 text-center">
-                            Please press a { data.remapMode }
-                            <br>
-                            <br>
-                            { data.inputController.Key_Last }
-                            <br>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" style="padding-top: 0;" rv-hide="data.remapWait">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" onclick="myApp.restoreDefaultKeymappings()" class="btn btn-primary">Restore
-                        Defaults</button>
-                    <button type="button" class="btn btn-primary" onclick="myApp.saveRemap()">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <ul class="circles" style="z-index: -10;">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-
-    <ul class="circles" style="z-index: -10; height: 200%;">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-
-    <ul class="circles" style="z-index: -10; height: 300%;">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-
-    <ul class="circles" style="z-index: -10; height: 400%;">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-    <ul class="circles" style="z-index: -10; height: 500%;">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-    <script src="input_controller.js"></script>
-    <script src="settings.js"></script>
-    <script src="romlist.js"></script>
-    <script src="particle.js"></script>
-    <script src="js/app.js"></script>
-
-
-    <script type="text/javascript">
-        var rando = Math.floor(Math.random() * Math.floor(100000));
-        var script = document.createElement('script');
-        script.src = 'script.js?v=' + rando;
-        document.getElementsByTagName('head')[0].appendChild(script);
-    </script>
+				</tr>
+			</div>
+			<div class="nes-table-responsive nes3">
+
+
+				<tr>
+					<th style="color: #c3ec0c">burned</th>
+					<td>---- 300.000.000</td>
+
+
+				</tr>
+			</div>
+
+			<div class="nes-table-responsive nes3">
+
+
+				<tr>
+					<th style="color: #c3ec0c">team</th>
+					<td style="border-color: #0126cb;">---- 50.000.000</td>
+
+
+				</tr>
+			</div>
+
+
+
+
+
+		</div>
+		<div class="roadmaptextb">
+			* | | | |------------------| | | | *
+		</div>
+		<div style="width:20px; height: 35px;"></div>
+		<div id="voting" class="container text-center fpixel"></div>
+		<div>
+
+			<div class="maintext" style="color: #ff0000;">
+				VOTING
+			</div>
+		</div>
+		<div class="lists" style="color: #ffffff">
+			<label for="default_select" style="color: #1a8d10">VOTE NEXT GAME</label>
+			<div class="nes-select">
+				<select required id="default_select">
+					<option value="" disabled selected hidden>Select...</option>
+					<option value="0">SUPER MARIO</option>
+					<option value="1">F-ZERO-X</option>
+					<option value="2">EVILS DEVIL</option>
+				</select>
+			</div>
+		</div>
+		<div class="lists" style="color: #ffffff">
+			<label for="default_select" style="color: #1a8d10">MULTIPLAYER OPTION</label>
+			<div class="nes-select">
+				<select required id="default_select">
+					<option value="" disabled selected hidden>Select...</option>
+					<option value="0">NO</option>
+					<option value="1">YES</option>
+				</select>
+			</div>
+		</div>
+		<div class="lists" style="color: #ffffff">
+			<label for="default_select" style="color: #1a8d10">BET OR CONSTANT WIN</label>
+			<div class="nes-select">
+				<select required id="default_select">
+					<option value="" disabled selected hidden>Select...</option>
+					<option value="0">BET</option>
+					<option value="1">CONSTANT</option>
+				</select>
+			</div>
+		</div>
+		<button type="button" class="nes-btn is-disabled">CONNECT WALLET</button>
+		<button type="button" class="nes-btn is-disabled">GIVE VOTE</button>
+		<div style="width:2px; height: 50px;"></div>
+		<div class="nes-balloon from-left is-dark">
+			<p class="baloon"><span>After Q3 stage voting will be enabled for now it is disabled</span></p>
+		</div>
+		<div class="roadmaptextb">
+			* | | | |------------------| | | | *
+		</div>
+		<div style="width:20px; height: 35px;"></div>
+		<div>
+
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+			<div class="roadmaptext">
+				||
+			</div>
+
+
+
+
+
+		</div>
+
+		<!--  Login Modal -->
+		<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="loginModalLabel">Login</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label>Password</label>
+							<input type="password" class="form-control" id="txtPassword" autocomplete="off"
+								rv-value="data.password" onkeydown="" placeholder="Enter Password">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" onclick="myApp.loginSubmit()">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Keymapping Modal -->
+		<div class="modal fade " id="buttonsModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-xl" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Remap Buttons</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="modalMain" style="padding-bottom: 0;">
+						<table class="table" rv-hide="data.remapWait">
+							<thead>
+								<tr>
+									<th scope="col">Button</th>
+									<th scope="col">Keyboard</th>
+									<th scope="col">Joypad</th>
+									<th scope="col">Remap</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">D-Up</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Up" type="text" class="form-control"
+											disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Up" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(1)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(1)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">D-Down</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Down" type="text" class="form-control"
+											disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Down" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(2)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(2)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">D-Left</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Left" type="text" class="form-control"
+											disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Left" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(3)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(3)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">D-Right</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Right" type="text" class="form-control"
+											disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Right" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(4)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(4)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">A</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_A" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Action_A" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(5)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(5)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">B</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_B" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Action_B" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(6)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(6)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">Start</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_Start" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Action_Start" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(8)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(8)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">Z</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_Z" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Action_Z" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(10)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(10)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">L</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_L" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Action_L" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(11)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(11)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">R</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_R" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Action_R" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(12)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(12)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">Menu</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Menu" type="text" class="form-control"
+											disabled>
+									</td>
+									<td>
+										<input rv-value="data.remappings.Joy_Mapping_Menu" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(9)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+													<button type="button" onclick="myApp.btnRemapJoy(9)"
+														class="btn btn-primary ml-2">Joypad</button>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">CUP</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_CUP" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(13)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">CDOWN</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_CDOWN" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(14)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">CLEFT</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_CLEFT" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(15)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">CRIGHT</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_CRIGHT" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(16)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">UP</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_Analog_Up" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(17)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">DOWN</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_Analog_Down" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(18)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">LEFT</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_Analog_Left" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(19)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">RIGHT</th>
+									<td>
+										<input rv-value="data.remappings.Mapping_Action_Analog_Right" type="text"
+											class="form-control" disabled>
+									</td>
+									<td>
+
+									</td>
+									<td>
+										<table class="regularTable">
+											<tr>
+												<td>
+													<button type="button" onclick="myApp.btnRemapKey(20)"
+														class="btn btn-primary">Key</button>
+												</td>
+												<td>
+
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div rv-if="data.remapWait">
+							<div class="mt-4 mb-4 text-center">
+								Please press a { data.remapMode }
+								<br>
+								<br>
+								{ data.inputController.Key_Last }
+								<br>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer" style="padding-top: 0;" rv-hide="data.remapWait">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" onclick="myApp.restoreDefaultKeymappings()"
+							class="btn btn-primary">Restore
+							Defaults</button>
+						<button type="button" class="btn btn-primary" onclick="myApp.saveRemap()">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<ul class="circles" style="z-index: -10;">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+
+		<ul class="circles" style="z-index: -10; height: 200%;">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+
+		<ul class="circles" style="z-index: -10; height: 300%;">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+
+		<ul class="circles" style="z-index: -10; height: 400%;">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<ul class="circles" style="z-index: -10; height: 500%;">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<script src="input_controller.js"></script>
+		<script src="settings.js"></script>
+		<script src="romlist.js"></script>
+		<script src="particle.js"></script>
+		<script src="js/app.js"></script>
+
+
+		<script type="text/javascript">
+			var rando = Math.floor(Math.random() * Math.floor(100000));
+			var script = document.createElement('script');
+			script.src = 'script.js?v=' + rando;
+			document.getElementsByTagName('head')[0].appendChild(script);
+		</script>
 </body>
 
 </html>
