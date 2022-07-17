@@ -1,1285 +1,1583 @@
 <!DOCTYPE html>
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en">
-<!--<![endif]-->
+<html>
 
 <head>
-	<meta charset="utf-8">
-	<title>Meta Verse Robotics</title>
-	<meta name="description" content="Responsive HTML5 Template">
-	<meta name="author" content="webthemez">
+    <title>N64 Wasm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="keywords" content="N64 Emulator, N64 JavaScript Emulator, WebAssembly, HTML5, Nintendo 64">
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
+    <style>
+        @import url('http://fonts.cdnfonts.com/css/8bit-wonder');
+        @import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
 
-	<!-- Mobile Meta -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        @keyframes color {
+            0% {
+                background: #33CCCC;
+            }
 
-	<!-- Favicon -->
-	<link rel="shortcut icon" href="images/favicon.ico">
+            20% {
+                background: #33CC36;
+            }
 
-	<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-	<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
-	<link href="css/animations.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-	<link href="css/custom.css" rel="stylesheet">
+            40% {
+                background: #B8CC33;
+            }
+
+            60% {
+                background: #FCCA00;
+            }
+
+            80% {
+                background: #33CC36;
+            }
+
+            100% {
+                background: #33CCCC;
+            }
+        }
+
+        body {
+            background-color: rgb(159, 159, 159);
+            background-image: url("img/new.png");
+            font-family: '8BIT WONDER', sans-serif;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .table td,
+        .table th {
+            padding: 5px;
+        }
+
+        .regularTable td,
+        .regularTable th {
+            padding: 0;
+            vertical-align: top;
+            border-top: 0px;
+        }
+
+
+
+
+        .nav-tabs .nav-item.show .nav-link,
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+        }
+
+
+        .topnav {
+            overflow: hidden;
+            background-color: rgb(0, 0, 0);
+            font-family: '8BIT WONDER', sans-serif;
+
+        }
+
+        .topnav a {
+            list-style: none;
+            color: rgb(113, 128, 255);
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .topnav ul {
+            list-style: none;
+            padding: 0px;
+            margin: 0px;
+            text-align: center;
+        }
+
+
+        .topnav a:hover {
+            background-color: rgb(0, 255, 217);
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #1c01cb;
+            color: rgb(0, 255, 21);
+        }
+
+        .maintext {
+            color: rgb(113, 128, 255);
+            font-family: '8BIT WONDER', sans-serif;
+        }
+
+        .topicmainone {
+            color: rgb(113, 128, 255);
+            font-family: '8BIT WONDER', sans-serif;
+        }
+
+
+
+        .btn-primary {
+            color: rgb(255, 255, 255);
+            font-family: '8BIT WONDER', sans-serif;
+            background-color: rgb(0, 0, 0);
+            font-size: 40px;
+            border-radius: 0px;
+            border-width: 3px;
+            border-color: rgb(21, 239, 137);
+
+        }
+
+        .btn-primary:hover {
+            background-color: #33CC36;
+            border-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+
+
+        }
+
+
+
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .circles li {
+            position: absolute;
+            display: table-row-group;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgb(255, 255, 255);
+            animation: animate 9s linear infinite;
+            bottom: -150px;
+
+        }
+
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 0s;
+        }
+
+
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 4s;
+        }
+
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 3s;
+        }
+
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 7s;
+        }
+
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .circles li:nth-child(9) {
+            left: 100%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 5px;
+            height: 5px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+
+
+        @keyframes animate {
+
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+
+        }
+
+        .baloon {
+            color: #33ff00;
+            font-size: 10px;
+        }
+
+        @media screen and (min-width: 601px) {
+            .maintext {
+                font-size: 50px;
+            }
+
+            .topicmainone {
+                font-size: 50px;
+                margin-left: 350px;
+                color: #0126cb;
+            }
+
+            .topicmainone2 {
+                margin-top: 45px;
+                font-size: 15px;
+                color: #0126cb;
+            }
+
+            .topicmainone3 {
+                font-size: 50px;
+                margin-top: -18px;
+                color: #ff0000;
+            }
+
+
+            .topnav a {
+                font-size: 30px;
+            }
+
+            .btn-primary {
+                font-size: 50px;
+            }
+
+            .baloon {
+                font-size: 20px;
+            }
+
+            .baloon2 {
+                font-size: 16px;
+            }
+
+            .wspace {
+                width: 2px;
+                height: 65px;
+            }
+
+            .fpixel {
+                font-size: 15px;
+            }
+
+            .roadmaptext {
+                font-size: 35px;
+                color: rgb(113, 128, 255);
+            }
+
+            .roadmapstyle {
+                color: rgb(113, 128, 255);
+                width: 1030px;
+            }
+
+            .nes-table-responsive {
+                color: #077e2b;
+                font-size: 20px;
+            }
+
+            .nes2 {
+                color: #ffffff;
+                font-size: 20px;
+            }
+
+            .nes3 {
+                color: #0dd8a5;
+                font-size: 20px;
+            }
+            .nes-btn{
+                font-size: 30px;
+            }
+            .roadmaptextb{
+                font-size: 0px;
+                color: #c300ff;
+                font-weight: bolder;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .maintext {
+                font-size: 19px;
+            }
+
+            .topicmainone {
+                font-size: 30px;
+                margin-left: 90px;
+                color: #0126cb;
+            }
+
+            .topicmainone2 {
+                margin-top: 25px;
+                font-size: 10px;
+                color: #0126cb;
+            }
+
+            .topicmainone3 {
+                font-size: 20px;
+                margin-top: -8px;
+                color: #ff0000;
+            }
+
+            .topnav a {
+                font-size: 10px;
+            }
+
+            .btn-primary {
+                font-size: 15px;
+            }
+
+            .baloon {
+                font-size: 10px;
+            }
+
+            .baloon2 {
+                font-size: 8px;
+            }
+
+            .wspace {
+                width: 2px;
+                height: 20px;
+            }
+
+            .fpixel {
+                font-size: 10px;
+            }
+
+            .roadmaptext {
+                font-size: 25px;
+                color: rgb(113, 128, 255);
+            }
+
+            .roadmapstyle {
+                color: rgb(113, 128, 255);
+                width: 320px;
+            }
+
+            .nes-table-responsive {
+                color: #077e2b;
+                font-size: 12px;
+            }
+
+            .nes2 {
+                color: #ffffff;
+                font-size: 12px;
+            }
+
+            .nes3 {
+                color: #0dd8a5;
+                font-size: 12px;
+            }
+            .nes-btn{
+                font-size: 14px;
+            }
+            .roadmaptextb{
+                font-size: 0px;
+                color: #0dd8a5;
+            }
+        }
+
+        .logo {
+            display: inline-block;
+            vertical-align: top;
+            width: 400px;
+            height: 400px;
+            margin-left: 0px;
+            margin-top: 0px;
+            /* if you want it vertically middle of the navbar. */
+        }
+    </style>
 </head>
 
-<body class="no-trans">
-	<audio src="XY.mp3" controls autoplay loop></audio>
-	<!-- scrollToTop -->
-	<div class="scrollToTop"><i class="icon-up-open-big"></i></div>
-
-	<!-- header start -->
-	<header class="header fixed clearfix navbar navbar-fixed-top">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-4">
-
-					<!-- header-left start -->
-					<div class="header-left">
-						
-
-						<!-- logo -->
-						<div class="logo">
-							<a href="#banner"><img id="logo" src="images/new.png" alt="Worthy"></a>
-						</div>
-						<!-- name-and-slogan -->
-						<div class="logo-section smooth-scroll">
-							<div class="brand"><a href="#banner"></a></div>
-						</div>
-
-					</div>
-					<!-- header-left end -->
-
-				</div>
-				<div class="col-md-8">
-
-					<!-- header-right start -->
-					<div class="header-right">
-
-						<!-- main-navigation start -->
-						<div class="main-navigation animated">
-
-							<!-- navbar start -->
-							<nav class="navbar navbar-default" role="navigation">
-								<div class="container-fluid">
-
-									<!-- Toggle get grouped for better mobile display -->
-									<div class="navbar-header">
-										<button type="button" class="navbar-toggle" data-toggle="collapse"
-											data-target="#navbar-collapse-1">
-											<span class="sr-only">Toggle navigation</span>
-											<span class="icon-bar"></span>
-											<span class="icon-bar"></span>
-											<span class="icon-bar"></span>
-										</button>
-									</div>
-
-									<!-- Collect the nav links, forms, and other content for toggling -->
-									<div class="collapse navbar-collapse scrollspy smooth-scroll"
-										id="navbar-collapse-1">
-										<ul class="nav navbar-nav navbar-right">
-											<li class="active"><a href="#banner">Home</a></li>
-											<li><a href="#services">Principles</a></li>
-											<li><a href="#about">About</a></li>
-
-											<li><a href="#portfolio">Images</a></li>
-											<li><a href="#price">Road Map</a></li>
-											<li><a href="#contact">Social</a></li>
-										</ul>
-									</div>
-
-								</div>
-							</nav>
-							<!-- navbar end -->
-
-						</div>
-						<!-- main-navigation end -->
-
-					</div>
-					<!-- header-right end -->
-
-				</div>
-			</div>
-		</div>
-	</header>
-	<!-- header end -->
-
-	<!-- banner start -->
-	<div id="banner">
-		<video class="desktop" data-keepplaying playsinline autoplay muted loop>
-			<source src="" type="video/webm">
-			<source src="banner.mp4" type="video/mp4">
-		</video>
-
-		<video class="mobile" data-keepplaying playsinline autoplay muted loop>
-			<source src="" type="video/webm">
-			<source src="banner2.mp4" type="video/mp4">
-		</video>
-
-	</div>
-	<!-- banner end -->
-	<section class="hero-caption secPadding">
-
-		<div class="container">
-
-			<!-- <div class="row " style="margin-top: 0px;">
-				<div class="waviy">
-					<span style="--i:1">M</span>
-					<span style="--i:2">E</span>
-					<span style="--i:3">T</span>
-					<span style="--i:4">A</span>
-					<span style="--i:5"></span>
-					<span style="--i:6">V</span>
-					<span style="--i:7">E</span>
-					<span style="--i:9">R</span>
-					<span style="--i:10">S</span>
-					<span style="--i:11">E</span>
-					<span style="--i:12"></span>
-					<span style="--i:13">R</span>
-					<span style="--i:14">R</span>
-					<span style="--i:15">O</span>
-					<span style="--i:16">B</span>
-					<span style="--i:17">O</span>
-					<span style="--i:18">T</span>
-					<span style="--i:19">I</span>
-					<span style="--i:20">C</span>
-					<span style="--i:21">S</span>
-
-				</div>
-				<div class="row">
-					</br>
-				</div>
-				<div class="row">
-				</br>
-			</div> -->
-			<div class="col-sm-12">
-				<h1 id="services_x" class="animate-charcter3 text-center">Meta Verse Robotics</h1>
-				<script>
-					if (navigator.userAgent.match(/Mobile|Windows Phone|Lumia|Android|webOS|iPhone|iPod|Blackberry|PlayBook|BB10|Opera Mini|\bCrMo\/|Opera Mobi/i)) {
-						document.getElementById('services_x').innerHTML = 'MVR';
-					}
-				</script>
-
-				<h1>First Decentralized Meta Verse Robotics Project</h1>
-				<p>Our main prupose is to use the whole creativity of th world. Every token holder will be able to
-					vote for the future of the project. We can see voting for new features on the UGV's or UAV's as
-					an example. There will be an pool of ideas wich can be integrated to the meta verse robotics,
-					the idea wich will get the most votes will be developed by our team, in the future even the
-					developers of the MVR will be voted by the folk.</p>
-			</div>
-
-		</div>
-
-		</div>
-
-	</section>
-	<!-- section start -->
-	<section class="section transprant-bg pclear secPadding">
-		<div class="container no-view" data-animation-effect="fadeIn">
-			<h2 id="services" class="animate-charcter text-center">Principles</h2>
-			<div class="space"></div>
-			<div class="row">
-				<div class="col-md-4">
-					<div class="media block-list">
-						<div class="media-left">
-							<i class="fa fa-chain fa-spin"></i>
-						</div>
-						<div class="media-body">
-							<h3 class="animate-charcter2 ">Transparency</h3>
-							<blockquote>
-								<p>Every code on the project will be written in ROS (Robotic Operation System), and
-									every one will have access to the codes after the intermediate relases over github.
-									To run the codes Ubuntu 20.04 operating system will be required wich can be
-									installed on every personal pc.</p>
-
-							</blockquote>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="media block-list">
-						<div class="media-left">
-							<i class="fa fa-gear fa-spin"></i>
-						</div>
-						<div class="media-body">
-							<h3 class="animate-charcter2">Data Collection</h3>
-							<blockquote>
-								<p>The data to use when building the enviroment and specific characteristics of the
-									robots will be gathered from the internet the availabile free data sets from
-									universitys. Since ROS wirtten codes will work on real machines real test will be
-									possible.</p>
-
-							</blockquote>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="media block-list">
-						<div class="media-left">
-							<i class="fa fa-laptop fa-spin"></i>
-						</div>
-						<div class="media-body">
-							<h3 class="animate-charcter2">Designing</h3>
-							<blockquote>
-								<p>For the desing of the simulation eviroment open source models of Gazebo are used at
-									the first stage, in future there can be an seperate team only for desinging the
-									enviroment. Our aim is to create the future of meta verse robotic together.</p>
-
-							</blockquote>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4">
-					<div class="media block-list">
-						<div class="media-left">
-							<i class="fa fa-clock-o fa-spin"></i>
-						</div>
-						<div class="media-body">
-							<h3 class="animate-charcter2">Development</h3>
-							<blockquote>
-								<p>The development will be made by our Developer team, befor the releases no codes will
-									be published public. After the releases every one can see the released sections of
-									the code on git but the codes will be licenced by MVR and only for non commercial
-									use available.</p>
-
-							</blockquote>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="media block-list">
-						<div class="media-left">
-							<i class="fa fa-heart fa-spin"></i>
-						</div>
-						<div class="media-body">
-							<h3 class="animate-charcter2">Quality</h3>
-							<blockquote>
-								<p>The written codes and the simulation enviroment are tested precisely by our team. We
-									guarantee that the simulation enviroment will work on every pc if the necessary
-									hardware and software is provided. The aim is to bring this simulation enviroment to
-									an common platform.</p>
-
-							</blockquote>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="media block-list">
-						<div class="media-left">
-							<i class="fa fa-magic fa-spin"></i>
-						</div>
-						<div class="media-body">
-							<h3 class="animate-charcter2">Release</h3>
-							<blockquote>
-								<p>The releases will made on the dates that are specified after the voting process, of
-									course ther can be delays due to the development in this cases all token holders
-									will be payed back in the money amount the lose after the deadline but these are the
-									further steps.</p>
-
-							</blockquote>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- section end -->
-
-	<!-- section start -->
-	<section class="section clearfix no-view secPadding" data-animation-effect="fadeIn">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<h1 id="about" class="title text-center">About <span>MVR Token</span></h1>
-					<p class="lead text-center">MVR project is the clef to connect realworld robotics applications with
-						meta verse.</p>
-					<div class="space"></div>
-					<div class="row">
-						<div class="col-md-6">
-							<img src="images/section-image-1.png" alt="">
-							<div class="space"></div>
-						</div>
-						<div class="col-md-6">
-							<p>All codes that can operate in the simulation enviroment are appropriate to work on real
-								machines, the jackal machine used in the fist enviroment can seen in the prev the yellow
-								UGV, on the side we can the real machine all the codes can be uploaded to these real
-								machines and tested in real world if desired.</p>
-							<p>If there are people who want to test the codes in real world, the can load and run the
-								codes on these vechiles they will only need to change the namspaces and load the correct
-								drivers. in the picture there is an 2-d lazer added to the Jackal UGV wich is not
-								included in the simulation enviroment created by us, but it can be in the next steps.
-							</p>
-							<ul class="list-unstyled">
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> Compactible codes with real
-									world.</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> Trying to work with real
-									vechiles.</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> Writing easy readable codes.
-								</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> Community will work on meta
-									verse, users can test in real.</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> A bigg common consciousness
-									community.</li>
-							</ul>
-						</div>
-					</div>
-					<div class="space"></div>
-					<h2>Only token holders will able to vote !</h2>
-					<div class="row">
-						<div class="col-md-6">
-							<p>The decision how the future of the robotics in meta verse will be created is going to
-								made by the token holders. After the initial promotions the contract for voting progress
-								will be launched and the folk will vote for the options how the simulation enviromnet
-								should be in the next steps.</p>
-							<ul class="list-unstyled">
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> The worth of the vote will be
-									propotional to the token amount.</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> Only accounts that had an
-									amount of tokens BEFORE the selection can vote.</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> Vote only once.</li>
-								<li><i class="fa fa-arrow-circle-right pr-10 colored"></i> An seperate web site is in
-									building progress for the selection.</li>
-
-							</ul>
-							<p>Build the future of robotics together, stay tuned.</p>
-						</div>
-						<div class="col-md-6">
-							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-								<div class="panel panel-default">
-									<div class="panel-heading" role="tab" id="headingOne">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-												aria-expanded="true" aria-controls="collapseOne">
-												How voting will work? #1
-											</a>
-										</h4>
-									</div>
-									<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
-										aria-labelledby="headingOne">
-										<div class="panel-body">
-											Every month there will be an voting progress, after the first voting has
-											started. Evrey token holder will be able to vote even if they have one MVR.
-											But before voting beggins the token balance of the accounts will be recorded
-											tokens transffered after the voting starts will not alter the selection. The
-											voting will ahve an duration of 1 day. The token holder folk will vote for
-											the topic that can be integrated to the enviroment. If we give an example:
-											"Map the enviroment with an UAV (Drone) and deliver an cargo to a location"
-											this could be an possible selection topic for wich token holder can vote.
-										</div>
-									</div>
-								</div>
-								<div class="panel panel-default">
-									<div class="panel-heading" role="tab" id="headingTwo">
-										<h4 class="panel-title">
-											<a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-												href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-												Who can vote? #2
-											</a>
-										</h4>
-									</div>
-									<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
-										aria-labelledby="headingTwo">
-										<div class="panel-body">
-											All token balances before the selction beginn will be recorded, after that
-											every related token holder cann connect their wallet to the voting web site
-											and vote. Be careful only the balance befor the selection begins will be
-											taked into account. İf the token balance until the second selection does not
-											change it will not alter the situation every holder can vote as normal.
-											Every vote is worth the token balance before the selection begins.
-										</div>
-									</div>
-								</div>
-								<div class="panel panel-default">
-									<div class="panel-heading" role="tab" id="headingThree">
-										<h4 class="panel-title">
-											<a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-												href="#collapseThree" aria-expanded="false"
-												aria-controls="collapseThree">
-												Benfit of the Project? #3
-											</a>
-										</h4>
-									</div>
-									<div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-										aria-labelledby="headingThree">
-										<div class="panel-body">
-											The most important benefit of the project is that every people on the world
-											will make an decision on the future of robotics in Meta Verse no class
-											distinction between people, but the main point is that in future only people
-											that are holding the token will be able to vote.
-
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- section end -->
-
-	<!-- section start -->
-	<div class="default-bg colord secPadding">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2">
-					<h1 class="text-center">MVR TOKEN COMMING SOON!</h1>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- section end -->
-
-	<!-- section start -->
-	<section class="section secPadding">
-		<div class="container">
-			<h1 class="text-center title" id="portfolio">Enviroment Insight</h1>
-			<div class="separator"></div>
-			<p class="lead text-center">Parts of the MVR enviroment can be seen below.<br> Enjoy!</p>
-			<br>
-			<div class="row no-view" data-animation-effect="fadeIn">
-				<div class="col-md-12">
-
-					<!-- isotope filters start -->
-					<div class="filters text-center">
-						<ul class="nav nav-pills">
-							<li class="active"><a href="#" data-filter="*">All</a></li>
-							<li><a href="#" data-filter=".web-design">Simulated real infrastructure vehicles</a></li>
-							<li><a href="#" data-filter=".app-development">Objects inside the enviroment</a></li>
-							<li><a href="#" data-filter=".mobile-apps">MVR text in the simulation world.</a></li>
-						</ul>
-					</div>
-					<!-- isotope filters end -->
-
-					<!-- portfolio items start -->
-					<div class="isotope-container row grid-space-20">
-						<div class="col-sm-6 col-md-3 isotope-item web-design">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-2.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-1">
-										<i class="fa fa-search-plus"></i>
-
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-1">UGV
-									Jackal</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-1" tabindex="-1" role="dialog"
-								aria-labelledby="project-1-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-1-label">UGV Jackal</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-2.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item app-development">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-8.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-2">
-										<i class="fa fa-search-plus"></i>
-
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal"
-									data-target="#project-2">Nuclear Power Plant</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-2" tabindex="-1" role="dialog"
-								aria-labelledby="project-2-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-2-label">Nuclear Power Plant</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-8.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item web-design">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-3.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-3">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Six
-									rotors UAV Drone</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-3" tabindex="-1" role="dialog"
-								aria-labelledby="project-3-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-3-label">Six rotors UAV Drone</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-3.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item mobile-apps">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-4.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-4">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-4">Whole
-									world side</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-4" tabindex="-1" role="dialog"
-								aria-labelledby="project-4-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-4-label">Whole world side</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-4.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item app-development">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-5.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-5">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-5">Power
-									Plant Chimney</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-5" tabindex="-1" role="dialog"
-								aria-labelledby="project-5-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-5-label">Power Plant Chimney</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-5.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item web-design">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-6.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-6">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-6">Four
-									rotors medium drone</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-6" tabindex="-1" role="dialog"
-								aria-labelledby="project-6-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-6-label">Four rotors medium drone</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-6.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item mobile-apps">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-1.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-7">
-										<i class="fa fa-search-plus"></i>
-										<span>Site Building</span>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-7">MVR
-									text in simulation</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-7" tabindex="-1" role="dialog"
-								aria-labelledby="project-7-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-7-label">MVR text in simulation</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-1.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item web-design">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-7.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-8">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-8">Four
-									rotors small UAV Drone</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-7" tabindex="-1" role="dialog"
-								aria-labelledby="project-8-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-8-label">Four rotors small UAV Drone
-											</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-7.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item app-development">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-9.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-9">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-9">Old
-									Ruine</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-9" tabindex="-1" role="dialog"
-								aria-labelledby="project-9-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-9-label">Old Ruine</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-9.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item app-development">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-10.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-10">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-10">Start
-									point of the simulation</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-10" tabindex="-1" role="dialog"
-								aria-labelledby="project-10-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-10-label">Start point of the simulation
-											</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-10.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item app-development">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-11.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-11">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-11">Whole
-									world back</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-11" tabindex="-1" role="dialog"
-								aria-labelledby="project-11-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-11-label">Whole world back</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-11.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-						<div class="col-sm-6 col-md-3 isotope-item app-development">
-							<div class="image-box">
-								<div class="overlay-container">
-									<img src="images/portfolio-12.jpg" alt="">
-									<a class="overlay" data-toggle="modal" data-target="#project-12">
-										<i class="fa fa-search-plus"></i>
-									</a>
-								</div>
-								<a class="btn btn-default btn-block" data-toggle="modal"
-									data-target="#project-12">firetrucks</a>
-							</div>
-							<!-- Modal -->
-							<div class="modal fade" id="project-12" tabindex="-1" role="dialog"
-								aria-labelledby="project-12-label" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span
-													aria-hidden="true">&times;</span><span
-													class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="project-12-label">firetruck</h4>
-										</div>
-										<div class="modal-body">
-
-											<div class="row">
-												<div class="col-md-12">
-													<img src="images/portfolio-12.jpg" alt="">
-													<br />
-													<h3>Project Description</h3>
-													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-														sed, quidem quis praesentium, ut unde. Quae sed, incidunt
-														laudantium nesciunt, optio corporis quod earum pariatur omnis
-														illo saepe numquam suscipit, nemo placeat dignissimos eius
-														mollitia et quas officia doloremque ipsum labore rem deserunt.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-sm btn-default"
-												data-dismiss="modal">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Modal end -->
-						</div>
-
-					</div>
-					<!-- portfolio items end -->
-
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- section end -->
-	<!-- section start -->
-	<section class="default-bg secPadding">
-
-		<div class="container">
-			<div class="row">
-				<div class='col-md-offset-2 col-md-8 text-center'>
-					<h2>The Feature is made of Robots !</h2>
-				</div>
-			</div>
-			<div class='row'>
-				<div class='col-md-offset-2 col-md-8'>
-					<div class="carousel slide" data-ride="carousel" id="quote-carousel">
-						<!-- Bottom Carousel Indicators -->
-						<ol class="carousel-indicators">
-							<li data-target="#quote-carousel" data-slide-to="0" class="active"></li>
-							<li data-target="#quote-carousel" data-slide-to="1"></li>
-							<li data-target="#quote-carousel" data-slide-to="2"></li>
-						</ol>
-
-						<!-- Carousel Slides / Quotes -->
-						<div class="carousel-inner">
-
-							<!-- Quote 1 -->
-							<div class="item active">
-								<blockquote>
-									<div class="row">
-										<div class="col-sm-3 text-center">
-											<img class="img-circle" src="images/robo.png"
-												style="width: 100px;height:100px;">
-										</div>
-										<div class="col-sm-9">
-											<p>I imagine the Pink Robots colouring is a ruse to lull us into a false
-												sense of security. I mean, who sees pink and thinks danger? But you’re
-												not going to get anywhere in your career as a giant world beating
-												anime-style ‘megabot’ if you don’t have at least a few tricks up your
-												sleeves.</p>
-											<small>The Pink Robots</small>
-										</div>
-									</div>
-								</blockquote>
-							</div>
-							<!-- Quote 2 -->
-							<div class="item">
-								<blockquote>
-									<div class="row">
-										<div class="col-sm-3 text-center">
-											<img class="img-circle" src="images/robo2.png"
-												style="width: 100px;height:100px;">
-										</div>
-										<div class="col-sm-9">
-											<p>The Beastie Boys’ finest MTV moment saw the trio manning a robot that
-												battles a giant octopus-headed creature armed with a pitchfork. The
-												video is a nod to the old Kaju movies, right down to the scenes of the
-												fleeing Japanese, with the battle itself somewhat resembling an episode
-												of The Power Rangers. </p>
-											<small>‘Intergalactic’ Robot</small>
-										</div>
-									</div>
-								</blockquote>
-							</div>
-							<!-- Quote 3 -->
-							<div class="item">
-								<blockquote>
-									<div class="row">
-										<div class="col-sm-3 text-center">
-											<img class="img-circle" src="images/robo3.png"
-												style="width: 100px;height:100px;">
-										</div>
-										<div class="col-sm-9">
-											<p>A cold emotionless face combined with the sexy curves of the female body,
-												all encased in steel, Maria is one of cinema’s most iconic images. She
-												was played by Brigitte Helm, who technically took on the dual roles of
-												the robot (or Maschinenmensch) and the human on whom it was modelled, in
-												Fritz Lang’s sci-fi masterpiece Metropolis.</p>
-											<small>Maria</small>
-										</div>
-									</div>
-								</blockquote>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- section end -->
-	<section id="price" class="price-table secPadding">
-		<div class="container text-center">
-			<div class="heading">
-				<h1 class="text-center title" id="">Road Map</h1>
-				<div class="separator"></div>
-				<p class="lead text-center">The 2 months Road-Map until the first selection.<br> M V R </p>
-				<br>
-			</div>
-			<div class="row">
-				<div class="col-sm-3">
-					<div class="panel panel-default text-center">
-						<div class="panel-heading">
-							<h3>MVR TOKEN LAUNCH</h3>
-						</div>
-						<div class="panel-body">
-							<h3 class="panel-title price"> 22/04/22 <span class="price-cents">Q2</span><span
-									class="price-month"></span></h3>
-						</div>
-						<ul class="list-group">
-							<li class="list-group-item">1000000000000 Tokens</li>
-							<li class="list-group-item">400000000000 Burning</li>
-							<li class="list-group-item">Verified Contract</li>
-							<li class="list-group-item">BSC Scan</li>
-							<li class="list-group-item">Smart Contract</li>
-							<li class="list-group-item"><a class="btn btn-default">Wiev on BSC Scan</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="panel panel-default text-center">
-						<div class="panel-heading">
-							<h3>ADD LIQUDITY</h3>
-						</div>
-						<div class="panel-body">
-							<h3 class="panel-title price"> 27/04/22-01/05/22 <span class="price-cents">Q2</span><span
-									class="price-month"></span></h3>
-						</div>
-						<ul class="list-group">
-							<li class="list-group-item">2 BNB</li>
-							<li class="list-group-item">5 Months Locked</li>
-							<li class="list-group-item">Locked On MarksMan</li>
-							<li class="list-group-item">PooCoin / PanckakeSwap</li>
-							<li class="list-group-item">%100 Of Tokens Locked</li>
-							<li class="list-group-item"><a class="btn btn-default">Swap On Panckake Swap</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="panel panel-danger text-center">
-						<div class="panel-heading">
-							<h3>2ND WEB SITE LAUNCH</h3>
-						</div>
-						<div class="panel-body">
-							<h3 class="panel-title price"> 10/05/22-15/05/22 <span class="price-cents">Q2</span><span
-									class="price-month"></span></h3>
-						</div>
-						<ul class="list-group">
-							<li class="list-group-item">Web Site for Selection</li>
-							<li class="list-group-item">Connect wallet</li>
-							<li class="list-group-item">Seccure SSL</li>
-							<li class="list-group-item">Free Voting</li>
-							<li class="list-group-item">Reliable</li>
-							<li class="list-group-item"><a class="btn btn-primary">Go To Web Site</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="panel panel-default text-center">
-						<div class="panel-heading">
-							<h3>FIRST SELECTION</h3>
-						</div>
-						<div class="panel-body">
-							<h3 class="panel-title price"> 06/06/22-10/06/22 <span class="price-cents">Q3</span><span
-									class="price-month"></span></h3>
-						</div>
-						<ul class="list-group">
-							<li class="list-group-item">First Selection</li>
-							<li class="list-group-item">10 Topics To Vote</li>
-							<li class="list-group-item">Only One Time</li>
-							<li class="list-group-item">Release Results Fast</li>
-							<li class="list-group-item">Start To Develop</li>
-							<li class="list-group-item"><a class="btn btn-default">Join Selection !</a></li>
-						</ul>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</section>
-
-
-	<!-- footer start -->
-	<footer id="footer">
-
-		<!-- .footer start -->
-		<div class="footer section">
-			<div class="container">
-				<h1 class="title text-center" id="contact">Contact Us</h1>
-
-
-
-
-
-
-				<ul class="social-links">
-					<li class="facebook"><a target="_blank" href="https://github.com/metaverserobotics"><i
-								class="fa fa-github"></i></a></li>
-					<li class="twitter"><a target="_blank" href="https://twitter.com/mvr_robotics"><i
-								class="fa fa-twitter"></i></a></li>
-					<li class="googleplus"><a target="_blank" href="https://www.instagram.com/metaverserobotics/"><i
-								class="fa fa-instagram"></i></a></li>
-					<li class="skype"><a target="_blank" href="soon"><i class="fa fa-group"></i></a></li>
-					<li class="linkedin"><a target="_blank" href="soon"><i class="fa fa-chain"></i></a></li>
-					<li class="youtube"><a target="_blank" href="soon"><i class="fa fa-youtube"></i></a></li>
-				</ul>
-
-
-
-
-			</div>
-		</div>
-		<!-- .footer end -->
-		<!-- .subfooter start -->
-		<div class="subfooter">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12">
-						<p class="text-center">Copyright © 2022 Website by <a target="_blank"
-								href="https://github.com/metaverserobotics">MVR Robotics Team</a>.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- .subfooter end -->
-
-	</footer>
-	<!-- footer end -->
-
-	<!-- JavaScript -->
-	<script type="text/javascript" src="plugins/jquery.min.js"></script>
-	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="plugins/modernizr.js"></script>
-	<script type="text/javascript" src="plugins/isotope/isotope.pkgd.min.js"></script>
-	<script type="text/javascript" src="plugins/jquery.backstretch.min.js"></script>
-	<script type="text/javascript" src="plugins/jquery.appear.js"></script>
-
-	<!-- Custom Scripts -->
-	<script type="text/javascript" src="js/custom.js"></script>
-
+<body>
+    <div class="topnav">
+        <ul>
+            <a href="#maindiv">MAIN</a>
+            <a href="#topPanel">PLAY GAME</a>
+            <a href="#tokenomics">ROADMAP</a>
+            <a href="#roadmap">TOKENOMICS</a>
+            <a href="#voting" style="color: #ff0000;">VOTING</a>
+            <a href="#tokenomics" style="color: #ff0000;">DOG</a>
+        </ul>
+
+    </div>
+
+    <div id="maindiv" class="container text-center">
+        <div class="wspace"></div>
+
+        <div class="continer row text-center">
+            <div class="topicmainone">
+                NINTENDO
+            </div>
+            <div class="topicmainone2">
+                (®)
+            </div>
+            <div style="width:2px; height: 10px;"></div>
+
+            <div class="topicmainone3" style="">
+                64
+            </div>
+        </div>
+
+        <img class="logo" src="img/logo.png">
+
+        <div class="nes-container with-title is-dark fpixel" style="margin-top: 50px; margin-bottom: 50px">
+            <h3 class="title">ABOUT</h3>
+            <div>
+                <i class="nes-icon is-small heart"></i>
+                Welcome to Nintendo 64 game token bring the historycal games back to decentralized apps on bsc scan.
+                this token will give you the ability to play all nintendo 64 games on chrome desktop. Token holders will
+                vote for the game that will be adopted to the decentralized enviroment, in the first stage playing games
+                is free to everyone. in furure only token holders will be able to play online on the DOG ( decentralized
+                online game ) platform and there will be give away between players
+                <i class="nes-icon is-small heart"></i>
+            </div>
+        </div>
+        <div class="roadmaptextb">
+            * | | | |------------------| | | | * 
+        </div>
+        <div id="topPanel" style="display: none;">
+            <div style="width:2px; height: 50px;"></div>
+            <div class="nes-balloon from-left is-dark">
+                <p class="baloon"><span>Game can be played only on Desktop Chrome at first stage every one can play after q2 stage only token holder will able to play authorizing with wallet</span></p>
+                <p class="baloon2">Thank you!!!</p>
+            </div>
+            <!-- BEFORE LOAD -->
+            <div rv-if="data.beforeEmulatorStarted">
+                <button type="button" class="nes-btn is-success" onclick="myClass.loadRom();"
+                    >PLAY GAME</button>
+                    <button type="button" class="nes-btn is-disabled"
+                    >CONNECT WALLET</button>
+
+
+
+
+                <span rv-if="data.showLogin">
+                    <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==false'"
+                        onclick="myApp.loginModal()">Login</button>
+                    <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==true'"
+                        onclick="myApp.logout()">Logout</button>
+                </span>
+
+                <div class="form-check" style="margin-top: 13px;" rv-if="data.settings.SHOWADVANCED">
+                    <label class="form-check-label" style="margin-right: 10px;">
+                        <input type="checkbox" class="form-check-input" rv-checked="data.chkAdvanced"
+                            rv-disabled="data.moduleInitializing">
+                        Advanced
+                    </label>
+                </div>
+
+                <div class="card"
+                    style="width: 18rem;margin-left: auto;margin-right: auto;margin-top: 20px;margin-bottom: 31px;"
+                    rv-if="data.chkAdvanced">
+                    <div class="card-body">
+                        <h5 class="card-title">Advanced</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Options</h6>
+
+                        <button id="btnUploadEep" class="btn btn-secondary mt-4" onclick="myApp.uploadEepBrowse()">
+                            Import Save File (EEP)</button>
+                        <div rv-if="data.eepName | ev_string '.length > 0'">
+                            { data.eepName }
+                        </div>
+
+                        <button id="btnUploadSra" class="btn btn-secondary mt-4" onclick="myApp.uploadSraBrowse()">
+                            Import Save File (SRA)</button>
+                        <div rv-if="data.sraName | ev_string '.length > 0'">
+                            { data.sraName }
+                        </div>
+
+                        <button id="btnUploadFla" class="btn btn-secondary mt-4" onclick="myApp.uploadFlaBrowse()">
+                            Import Save File (FLA)</button>
+                        <div rv-if="data.flaName | ev_string '.length > 0'">
+                            { data.flaName }
+                        </div>
+
+                        <!-- <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                </div>
+
+
+
+                <input id="file-upload-eep" type="file" />
+                <input id="file-upload-sra" type="file" />
+                <input id="file-upload-fla" type="file" />
+                <input id="file-upload" type="file" />
+
+                <!-- ROM LIST -->
+                <!-- <div class="form-group mt-2 mb-4" rv-if="data.hasRoms"
+                    style="width: 300px;margin-left: auto; margin-right:auto;">
+                    <select class="form-control" id="romselect">
+                        <option rv-each-rom="data.romList" rv-value="rom.url">{rom.title}</option>
+                    </select>
+                </div> -->
+
+                <!-- SAVE STATES -->
+                <div id="dbSaveStates" rv-if="data.loggedIn | ev '==true'">
+                    <button id="btnLoadRomAndSaveState" class="btn btn-primary mt-2 mb-2"
+                        onclick="myApp.loadRomAndSavestate()" rv-disabled="data.moduleInitializing">Load
+                        Savestate</button>
+                    <div class="form-group mt-2 mb-4" style="width: 300px;margin-left: auto; margin-right:auto;">
+                        <select class="form-control" id="savestateSelect">
+                            <option rv-each-item="data.n64SaveStates" rv-value="item.Name">{item.Name}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- AFTER LOAD -->
+            <div rv-hide="data.beforeEmulatorStarted">
+                <button class="nes-btn" onclick="myApp.newRom()">BACK</button>
+                <div class="btn-group mt-2 mb-2" rv-if="data.settings.SHOWADVANCED">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Advanced
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" onclick="myApp.exportEep()" style="cursor: pointer;">Export Save
+                            (EEP)</a>
+                        <a class="dropdown-item" onclick="myApp.exportSra()" style="cursor: pointer;">Export Save
+                            (SRA)</a>
+                        <a class="dropdown-item" onclick="myApp.exportFla()" style="cursor: pointer;">Export Save
+                            (FLA)</a>
+                    </div>
+                </div>
+                <div class="btn-group mt-2 mb-2" rv-if="data.settings.SHOWOPTIONS">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Options
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" onclick="myApp.reset()" style="cursor: pointer;">Reset</a>
+                        <a class="dropdown-item" onclick="myApp.toggle_fps()" style="cursor: pointer;">Toggle FPS</a>
+                    </div>
+                </div>
+
+                <button rv-if="data.loggedIn | ev '==true'" class="btn btn-primary mt-2 mb-2"
+                    onclick="myApp.loadCloud()" rv-disabled="data.noCloudSave">Load Cloud</button>
+
+                <button class="nes-btn " onclick="myApp.zoomOut()">Zoom Out</button>
+                <button class="nes-btn " onclick="myApp.zoomIn()">Zoom In</button>
+                <button class="nes-btn " onclick="myApp.fullscreen()">Full Screen</button>
+
+
+            </div>
+
+
+
+            <div style="margin-top:40px;" rv-if="data.beforeEmulatorStarted">
+                <div id="dropArea" style="width: 0px; height: 0px; border: rgb(0, 0, 0) 1px solid;margin-left: auto;
+                    color: rgb(0, 0, 0);margin-right: auto; border-style: dashed;">
+                    <br>
+                    <br>
+
+                    <br>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="lblErrorOuter" style="display: none;">
+            <div rv-if="data.lblError | ev_string '.length > 0'" class="alert alert-danger mt-4" id="lblError"
+                role="alert" rv-html="data.lblError">
+            </div>
+        </div>
+
+        <div id="mydiv" class="mt-4"></div>
+        <!-- ID has to be canvas it's hardcoded in the EM generated .js -->
+        <div id="canvasDiv" style="display: none;">
+            <canvas id="canvas" style="width: 640px;"></canvas>
+        </div>
+
+        <div id="bottomPanel" rv-hide="data.beforeEmulatorStarted">
+            <!-- <div>{ data.audioSkipCount}</div> -->
+        </div>
+
+
+        <h6 class="card-title mt-4">
+            <button type="button" class="nes-btn is-primary"
+            >BSC SCAN</button>
+            <button type="button" class="nes-btn is-primary"
+            >BUY N64</button>
+            
+            <!-- <button id="btnPlayGame" class="btn btn-primary mt-4" onclick="myClass.loadRom();" rv-if="data.hasRoms"
+                rv-disabled="data.moduleInitializing">BSC SCAN</button>
+            <button id="btnPlayGame" class="btn btn-primary mt-4" onclick="myClass.loadRom();" rv-if="data.hasRoms"
+                rv-disabled="data.moduleInitializing">BUY N64</button> -->
+              
+        </h6>
+
+    </div>
+    <div style="width:20px; height: 35px;"></div>
+
+    <div id="tokenomics" class="container text-center fpixel">
+        <div class="roadmaptextb">
+            * | | | |------------------| | | | * 
+        </div>
+        <div style="width:20px; height: 35px;"></div>
+        <div class="roadmaptext">
+            Q1
+        </div>
+
+        <div class="nes-container is-dark with-title">
+            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">*</p>
+            <p><i class="nes-icon is-small star is-half"></i>Launch of N64 TOKEN and Website with off chain demo game.<i
+                    class="nes-icon is-small star is-half"></i></p>
+        </div>
+        <div class="roadmaptext">
+            Q2
+        </div>
+
+        <div class="nes-container is-dark with-title">
+            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">**</p>
+
+            <p> <i class="nes-icon is-small star is-empty"></i> Update website to give Game acces only for n64 token
+                holders <i class="nes-icon is-small star is-empty"></i></p>
+        </div>
+        <div class="roadmaptext">
+            Q3
+        </div>
+        <div class="nes-container is-dark with-title">
+            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">***</p>
+            <p><i class="nes-icon is-small star is-empty"></i>Deploy contracts for voting with the n64 token holders and
+                start voting for the next game<i class="nes-icon is-small star is-empty"></i></p>
+        </div>
+        <div class="roadmaptext">
+            Q4
+        </div>
+        <div class="nes-container is-dark with-title">
+            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">****</p>
+            <p><i class="nes-icon is-small star is-empty"></i>Adopt the selected game to the decentralized enviroment
+                for multiplayer win and get rewards as n64 token<i class="nes-icon is-small star is-empty"></i></p>
+        </div>
+        <div class="roadmaptext">
+            Q5
+        </div>
+        <div class="nes-container is-dark with-title">
+            <p class="title roadmapstyle" style="color: rgb(113, 128, 255);">*****</p>
+            <p><i class="nes-icon is-small star is-empty"></i>Renounce Ownership and enjoy the ride for nintendo 64
+                multiplay on decentralized world.<i class="nes-icon is-small star is-empty"></i></p>
+        </div>
+        <div class="roadmaptext">
+            ||
+        </div>
+        <div class="roadmaptext">
+            ||
+        </div>
+        <div class="roadmaptext">
+            ||
+        </div>
+
+        <section class="nes-container">
+            <section class="message-list">
+                <section class="message -left">
+
+                    <!-- Balloon -->
+                    <div class="nes-balloon from-left">
+                        <p>Hello Mate what is ths n64 token</p>
+                    </div>
+                </section>
+
+                <section class="message -right">
+                    <!-- Balloon -->
+                    <div class="nes-balloon from-right">
+                        <p>we can play nintendo 64 games on chain bet and win now its in the first launch state look at
+                            the road map</p>
+                    </div>
+                </section>
+
+                <section class="message -left">
+
+                    <!-- Balloon -->
+                    <div class="nes-balloon from-left">
+                        <p>Thx Mate i am going to buy before it will raise</p>
+                    </div>
+                </section>
+
+                <section class="message -right">
+                    <!-- Balloon -->
+                    <div class="nes-balloon from-right">
+                        <p>Np enjoy the off chain demo game</p>
+                    </div>
+                </section>
+            </section>
+        </section>
+        <div class="roadmaptextb">
+            * | | | |------------------| | | | * 
+        </div>
+        <div style="width:20px; height: 35px;"></div>
+    </div>
+
+    <div id="roadmap" class="container text-center">
+        <div class="nes-container with-title is-dark" style="margin-top: 50px; margin-bottom: 50px;">
+            <h3 class="title"></h3>
+            <div>
+                <div class="maintext">
+                    TOKENOMICS
+                </div>
+            </div>
+            <div class="nes-table-responsive nes2">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">lp</th>
+                    <td>---- 20 BNB</td>
+
+
+                </tr>
+            </div>
+            <div style="width:2px; height: 50px;"></div>
+
+
+            <div class="nes-table-responsive">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">total tax fee</th>
+                    <td>---- 14 %</td>
+
+                </tr>
+            </div>
+            <div class="nes-table-responsive">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">development</th>
+                    <td>---- 6 %</td>
+
+
+                </tr>
+            </div>
+            <div class="nes-table-responsive">
+
+
+                <tr style="color: #007bff">
+                    <th style="color: #c3ec0c">marketing</th>
+                    <td style="color: #9aa7b4;">---- 6 %</td>
+
+
+                </tr>
+            </div>
+            <div class="nes-table-responsive">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">reward</th>
+                    <td>---- 2 %</td>
+
+
+                </tr>
+            </div>
+
+
+            <div style="width:2px; height: 50px;"></div>
+            <div class="nes-table-responsive nes3">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">Totoal supply </th>
+                    <td>---- 1.000.000.000</td>
+
+
+                </tr>
+            </div>
+            <div class="nes-table-responsive nes3">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">liquid added</th>
+                    <td>---- 650.000.000</td>
+
+
+                </tr>
+            </div>
+            <div class="nes-table-responsive nes3">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">burned</th>
+                    <td>---- 300.000.000</td>
+
+
+                </tr>
+            </div>
+
+            <div class="nes-table-responsive nes3">
+
+
+                <tr>
+                    <th style="color: #c3ec0c">team</th>
+                    <td style="border-color: #0126cb;">---- 50.000.000</td>
+
+
+                </tr>
+            </div>
+
+
+
+
+
+        </div>
+        <div class="roadmaptextb">
+            * | | | |------------------| | | | * 
+        </div>
+        <div style="width:20px; height: 35px;"></div>
+        <div id="voting" class="container text-center fpixel"></div>
+        <div>
+            
+            <div class="maintext" style="color: #ff0000;">
+                VOTING
+            </div>
+        </div>
+        <div class="lists" style="color: #ffffff">
+            <label for="default_select" style="color: #1a8d10">VOTE NEXT GAME</label>
+            <div class="nes-select">
+                <select required id="default_select">
+                    <option value="" disabled selected hidden>Select...</option>
+                    <option value="0">SUPER MARIO</option>
+                    <option value="1">F-ZERO-X</option>
+                    <option value="2">EVILS DEVIL</option>
+                </select>
+            </div>
+        </div>
+        <div class="lists" style="color: #ffffff">
+            <label for="default_select" style="color: #1a8d10">MULTIPLAYER OPTION</label>
+            <div class="nes-select">
+                <select required id="default_select">
+                    <option value="" disabled selected hidden>Select...</option>
+                    <option value="0">NO</option>
+                    <option value="1">YES</option>
+                </select>
+            </div>
+        </div>
+        <div class="lists" style="color: #ffffff">
+            <label for="default_select" style="color: #1a8d10">BET OR CONSTANT WIN</label>
+            <div class="nes-select">
+                <select required id="default_select">
+                    <option value="" disabled selected hidden>Select...</option>
+                    <option value="0">BET</option>
+                    <option value="1">CONSTANT</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" class="nes-btn is-disabled">CONNECT WALLET</button>
+        <button type="button" class="nes-btn is-disabled">GIVE VOTE</button>
+        <div style="width:2px; height: 50px;"></div>
+        <div class="nes-balloon from-left is-dark">
+            <p class="baloon"><span>After Q3 stage voting will be enabled for now it is disabled</span></p>
+        </div>
+        <div class="roadmaptextb">
+            * | | | |------------------| | | | * 
+        </div>
+        <div style="width:20px; height: 35px;"></div>
+        <div>
+
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+            <div class="roadmaptext">
+                ||
+            </div>
+
+
+
+
+
+    </div>
+
+    <!--  Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="txtPassword" autocomplete="off"
+                            rv-value="data.password" onkeydown="" placeholder="Enter Password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="myApp.loginSubmit()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Keymapping Modal -->
+    <div class="modal fade " id="buttonsModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Remap Buttons</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalMain" style="padding-bottom: 0;">
+                    <table class="table" rv-hide="data.remapWait">
+                        <thead>
+                            <tr>
+                                <th scope="col">Button</th>
+                                <th scope="col">Keyboard</th>
+                                <th scope="col">Joypad</th>
+                                <th scope="col">Remap</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">D-Up</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Up" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Up" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(1)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(1)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">D-Down</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Down" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Down" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(2)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(2)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">D-Left</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Left" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Left" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(3)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(3)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">D-Right</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Right" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Right" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(4)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(4)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">A</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_A" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Action_A" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(5)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(5)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">B</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_B" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Action_B" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(6)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(6)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Start</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_Start" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Action_Start" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(8)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(8)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Z</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_Z" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Action_Z" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(10)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(10)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">L</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_L" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Action_L" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(11)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(11)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">R</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_R" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Action_R" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(12)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(12)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Menu</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Menu" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <input rv-value="data.remappings.Joy_Mapping_Menu" type="text" class="form-control"
+                                        disabled>
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(9)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapJoy(9)"
+                                                    class="btn btn-primary ml-2">Joypad</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">CUP</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_CUP" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(13)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">CDOWN</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_CDOWN" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(14)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">CLEFT</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_CLEFT" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(15)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">CRIGHT</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_CRIGHT" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(16)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">UP</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_Analog_Up" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(17)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">DOWN</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_Analog_Down" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(18)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">LEFT</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_Analog_Left" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(19)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">RIGHT</th>
+                                <td>
+                                    <input rv-value="data.remappings.Mapping_Action_Analog_Right" type="text"
+                                        class="form-control" disabled>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <table class="regularTable">
+                                        <tr>
+                                            <td>
+                                                <button type="button" onclick="myApp.btnRemapKey(20)"
+                                                    class="btn btn-primary">Key</button>
+                                            </td>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div rv-if="data.remapWait">
+                        <div class="mt-4 mb-4 text-center">
+                            Please press a { data.remapMode }
+                            <br>
+                            <br>
+                            { data.inputController.Key_Last }
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-top: 0;" rv-hide="data.remapWait">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="myApp.restoreDefaultKeymappings()" class="btn btn-primary">Restore
+                        Defaults</button>
+                    <button type="button" class="btn btn-primary" onclick="myApp.saveRemap()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="circles" style="z-index: -10;">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <ul class="circles" style="z-index: -10; height: 200%;">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <ul class="circles" style="z-index: -10; height: 300%;">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <ul class="circles" style="z-index: -10; height: 400%;">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    <ul class="circles" style="z-index: -10; height: 500%;">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    <script src="input_controller.js"></script>
+    <script src="settings.js"></script>
+    <script src="romlist.js"></script>
+    <script src="particle.js"></script>
+    <script src="js/app.js"></script>
+
+
+    <script type="text/javascript">
+        var rando = Math.floor(Math.random() * Math.floor(100000));
+        var script = document.createElement('script');
+        script.src = 'script.js?v=' + rando;
+        document.getElementsByTagName('head')[0].appendChild(script);
+    </script>
 </body>
 
 </html>
